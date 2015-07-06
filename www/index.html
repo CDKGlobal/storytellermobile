@@ -1,125 +1,58 @@
 <!DOCTYPE html>
-<!-- from output: 1 line -->
 <html>
-<head>
-    <meta charset="utf8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>Storyteller Consumer</title> 
+        <title>Storyteller Consumer</title> 
 
-    <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
-    <link rel="stylesheet" href="/stylesheets/application.css">
-    <link rel="import" href="/components/supersonic/components/import.html"> 
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">
+        <link rel="import" href="/components/supersonic/components/import.html"> 
+         
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
 
-    <!-- from output: 2 lines-->
-     
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
 
+        <script src="/scripts/application.js"></script>
+    </head>
 
-    <script src="http://localhost/cordova.js"></script>
-    <script src="/components/steroids-js/steroids.js"></script>
-    <script src="/components/angular/angular.js"></script>
-    <script src="/components/supersonic/supersonic.js"></script>
-    <script src="/components/webcomponentsjs/webcomponents.js"></script>
+    <body ng-app="SteroidsApplication">
 
-    <script src="/scripts/application.js"></script>
+        <div class="padding" ng-controller="IndexController">
 
-    <!-- from output: 28 lines -->
-<!--
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="/scripts/stomp-something.js"></script>
--->
+            <super-navbar>
+                <super-navbar-title ng-bind="navbarTitle">
+                </super-navbar-title>
+            </super-navbar>
 
-<!--
-    <script>
-        // function showMessage(message) {
-        //     $("#messages").append('<li class="list-group-item">' + message.body + '</li>');
-        // }
+            <p>Note: this file is located at <strong>www/index.html</strong></p>
 
-        // function connect() {
-        //     console.log("Connecting to server...");
-        //     var link = /*[[@{/connect}]]*/ 'connect';
-        //     var socket = new SockJS(link);
-        //     steroids.logger.log("Opened socket");
-        //     var stompClient = Stomp.over(socket);
-        //     steroids.logger.log("Did the stomp");
+        </div>
 
-        //     stompClient.connect({}, function (frame) {
-        //         steroids.logger.log("About to subscribe");
-        //         stompClient.subscribe('/topic/messages', function (message) {
-        //             showMessage(message);
-        //         });
-        //     }, function(error) {
-        //         steroids.logger.log("Connect failed");
-        //         console.log("STOMP protocol error " + error);
-        //     });
-        // }
-    </script>
--->
-</head>
+        <style>
+            /* Space out content a bit */
+            body {
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
 
-<body ng-app="SteroidsApplication">
+            .container-narrow > hr {
+                margin: 30px 0;
+            }
+        </style>
 
-    <div class="padding" ng-controller="IndexController">
-
-        <super-navbar>
-            <super-navbar-title ng-bind="navbarTitle">
-            </super-navbar-title>
-        </super-navbar>
-
-        <p>Note: this file is located at <strong>www/index.html</strong></p>
-
-<!--         <div class="card padding">
-            <h4>Navigation Bar Title (Look Up!)</h4>
-            <label class="item item-input">
-                <input type="text" ng-model="navbarTitle">
+        <div class="container">
+            <h1>Consumer</h1>
+            <label class="item">
+                <ul id="messages" class="list-group"></ul>
             </label>
-        </div> 
+        </div>
 
-        <p>You can find the AngularJS controller used at:</p>
-
-        <p><strong><small>www/scripts/application.js</small></strong></p>
-
-        <h2>Get in touch with us!</h2>
-
-        <p>Learn more about building apps with Supersonic at <a onclick="supersonic.app.openURL('http://docs.appgyver.com')" href="">http://docs.appgyver.com</a>.</p>
-
-        <p>Feel free to contact us at <a onclick="supersonic.app.openURL('mailto:contact@appgyver.com')" href="">contact@appgyver.com</a>, we would love to get your feedback!</p>
-        -->
-
-    </div>
-    <!-- from output: 20 lines -->
-    <style>
-        /* Space out content a bit */
-        body {
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-
-        .container-narrow > hr {
-            margin: 30px 0;
-        }
-    </style>
-
-    <div class="container">
-        <h1>Consumer</h1>
-        <label class="item">
-            <ul id="messages" class="list-group"></ul>
-        </label>
-    </div>
-<!--
-    <script type="text/javascript">
-        // (function () {
-        //     connect();
-        // })();
-    </script>
--->
-
-</body>
+    </body>
 </html>
