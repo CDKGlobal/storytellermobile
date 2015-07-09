@@ -96,13 +96,13 @@
     <div class="item" ng-controller="MessageController">
         <ul>
             <!-- <li ng-repeat=" msg in msgs " class="item"> -->
-            <li ng-repeat="msg in messages.message" class="item">
+            <li ng-repeat="msg in messages.message.slice().reverse()" class="item">
                 {{msg.message}} <br />
                 {{msg.userId}} <br />
-                {{msg.timeStamp}} <br />
-                <p ng-repeat="hashes in msg.hashtags">
-                    {{hashes}}
-                </p>
+                {{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} <br />
+                <span ng-repeat="hashes in msg.hashtags">
+                    #{{hashes}}
+                </span>
             </li>
         </ul>
     </div>
