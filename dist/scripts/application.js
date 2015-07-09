@@ -1,16 +1,21 @@
-angular.module('SteroidsApplication', [
-  'supersonic'
-])
-.controller('IndexController', function($scope, supersonic) {
+angular
+.module('SteroidsApplication', ['supersonic'])
 
-  $scope.navbarTitle = "Consumer Application";
+.controller('MessageController', function($scope, supersonic, $http) {
+	// ['supersonic'] is a dependency of SteroidsApplication
+	$scope.getMsgs = function() {
 
+		$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
+		.success(function(data, status, headers, config, scope) {
+			supersonic.logger.log("Success! " + status);
+			$scope.messages = data;
+			$scope.apply;
+		})
+		.error(function(data, status, headers, config) {
+			supersonic.logger.log("Error: " + status);
+			$scope.wLat = "Error: no connection";
+		});
+	}
+
+	setInterval($scope.getMsgs, 5000);
 });
-window.onload = function() {
-	var target = document.getElementById("messages");
-	window.setInterval(function() {
-		var entry = document.createElement('li');
-		entry.appendChild(document.createTextNode("Fake message! " + Math.random()));
-		target.insertBefore(entry, target.childNodes[0]);
-	}, 15000);
-}
