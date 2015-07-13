@@ -58,6 +58,7 @@
     <script src="/components/supersonic/supersonic.js"></script>
     <script src="/components/webcomponentsjs/webcomponents.js"></script>
 
+
 </head>
 
 <body ng-app="SteroidsApplication">
@@ -70,13 +71,17 @@
         </super-navbar>
     </div>
 
+    <div id="topNavButton">
+        <p>Back to Top</p>
+    </div>
+
 	<super-navigate view-id="advanced-search">
 		<button class="button button-block button-positive icon-left super-search">Search</button>
 	</super-navigate>
 
-    <div class="item" ng-controller="MessageController">
+    <div class="padding" ng-controller="MessageController">
         <ul>
-            <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="item">
+            <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
                 <p class="userId">{{msg.userId}} </p>
                 <p class="messageBody">{{msg.message}} </p>
                 <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>

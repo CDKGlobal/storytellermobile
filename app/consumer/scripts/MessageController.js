@@ -2,17 +2,6 @@ angular
 .module('consumer', [
 	// Declare any module-specific AngularJS dependencies here
 	'common'
-]);
-angular
-  .module('consumer')
-  .controller('IndexController', function($scope, supersonic) {
-    // Controller functionality here
-  });
-
-angular
-.module('consumer', [
-	// Declare any module-specific AngularJS dependencies here
-	'common'
 ])
 .controller('MessageController', function($scope, supersonic, $http) {
 	// ['supersonic'] is a dependency of SteroidsApplication

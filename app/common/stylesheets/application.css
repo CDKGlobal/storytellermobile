@@ -8,15 +8,45 @@
 	display: none;
 }
 
+.message {
+	border: solid;
+	border-width: 2px;
+	border-color: grey;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: 2px;
+	background-color: lightcyan;
+}
+
 .messageBody {
-	font-size: 16pt !important;
+	font-size: 12pt !important;
 }
 
 .subelement, .messageBody {
 	padding-left: 10px;
 }
 
+#topNavButton {
+	font-size: 8pt;
+	text-align: center;
+	background-color: cyan;
+	border: solid;
+	border-width: 2px;
+	border-color: blue;
+	border-radius: 5px;
+	width: 90px;
+	padding-top: 7px;
+	position: fixed;
+	z-index: 100;
+	left: 46%;
+
+
+	/*position: absolute;
+	margin: auto;
+	line-height: 1 !important;*/
+}
+
 .userId {
-	font-size: 14pt !important;
+	font-size: 10pt !important;
 	font-weight: bold !important;
 }
