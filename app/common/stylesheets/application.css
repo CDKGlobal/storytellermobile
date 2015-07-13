@@ -27,23 +27,20 @@
 }
 
 #topNavButton {
-	font-size: 8pt;
+	font-size: 9pt;
 	text-align: center;
 	background-color: cyan;
 	border: solid;
 	border-width: 2px;
 	border-color: blue;
 	border-radius: 5px;
-	width: 90px;
-	padding-top: 7px;
+	width: 80px;
+	padding: 5px;
+	right: 10px;
+	top: 10px;
 	position: fixed;
 	z-index: 100;
-	left: 46%;
-
-
-	/*position: absolute;
-	margin: auto;
-	line-height: 1 !important;*/
+	display: none;
 }
 
 .userId {

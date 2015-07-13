@@ -51,14 +51,13 @@
      
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"/>
-
+<!--
     <script src="http://localhost/cordova.js"></script>
     <script src="/components/steroids-js/steroids.js"></script>
     <script src="/components/angular/angular.js"></script>
     <script src="/components/supersonic/supersonic.js"></script>
     <script src="/components/webcomponentsjs/webcomponents.js"></script>
-
-
+-->
 </head>
 
 <body ng-app="SteroidsApplication">
@@ -71,15 +70,36 @@
         </super-navbar>
     </div>
 
-    <div id="topNavButton">
-        <p>Back to Top</p>
-    </div>
+    <input type="button" id="topNavButton" value="Back to Top" onclick="scrollToTop()">
+
+    <script>
+        var topButton = document.getElementById("topNavButton");
+        window.onscroll = function (oEvent) {
+            // var mydivpos = document.getElementById("allMessages").offsetTop;
+            var height = window.innerHeight;
+            if(window.pageYOffset > height) {
+                topButton.style.display = "block";
+            } else {
+                topButton.style.display = "none";
+            }
+        };
+
+        var timeOut;
+        function scrollToTop() {
+            if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0){
+                window.scrollBy(0,-50);
+                timeOut=setTimeout('scrollToTop()',10);
+            }
+            else clearTimeout(timeOut);
+        }
+
+    </script>
 
 	<super-navigate view-id="advanced-search">
 		<button class="button button-block button-positive icon-left super-search">Search</button>
 	</super-navigate>
 
-    <div class="padding" ng-controller="MessageController">
+    <div id="allMessages" class="padding" ng-controller="MessageController">
         <ul>
             <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
                 <p class="userId">{{msg.userId}} </p>
