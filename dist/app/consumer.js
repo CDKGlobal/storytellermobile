@@ -18,7 +18,6 @@ angular
 	// ['supersonic'] is a dependency of SteroidsApplication
 	$scope.allMsg = {"messages":[{"userId":"Loading...","message":"Please wait"}]};
 
-
 	$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
 	.success(function(data, status, headers, config, scope) {
 		$scope.allMsg = data;
@@ -29,9 +28,10 @@ angular
 		$scope.wLat = "Error: no connection";
 	});
 
+
 	$scope.update = function () {
 		supersonic.logger.log("updating...");
-		$http.jsonp("https://api.forecast.io/forecast/f9bc1181900dcc4b7555f6e48e4998a7/37.8267,-122.423?callback=JSON_CALLBACK")
+		$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
 		.success(function(data, status, headers, config, scope) {
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
@@ -41,5 +41,6 @@ angular
 			supersonic.logger.log("Error: " + status);
 			$scope.allMsg = {"messages":[{"userId":"Error!","message":"Please restart the app."}]};
 		});
+		$scope.apply;
 	}
 });

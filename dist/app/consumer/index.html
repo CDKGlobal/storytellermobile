@@ -71,8 +71,10 @@
         </div>
 
         <button id="topNavButton" onclick="scrollToTop()" ng-click="update()">Back to Top</button>
+        <div id="spinner"></div>
 
         <script>
+
             var topButton = document.getElementById("topNavButton");
             window.onscroll = function (oEvent) {
                 // var mydivpos = document.getElementById("allMessages").offsetTop;
@@ -92,6 +94,9 @@
                 } else {
                     clearTimeout(timeOut);
                 }
+                // show rotating thinger at the top
+                // reload page
+                // hide the thinger
             }
 
         </script>
