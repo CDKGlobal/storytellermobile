@@ -1,0 +1,22 @@
+.supersonic-navbar-mock {
+  background-color: #00B5FF !important;
+  text-align: center;
+  font-weight: 600;
+}
+
+#loader {
+	display: none;
+}
+
+.messageBody {
+	font-size: 16pt !important;
+}
+
+.subelement, .messageBody {
+	padding-left: 10px;
+}
+
+.userId {
+	font-size: 14pt !important;
+	font-weight: bold !important;
+}

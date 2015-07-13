@@ -6,6 +6,41 @@
     supersonic.app.splashscreen.hide();
   });
   </script>
+  <!-- Cloud resource definition file for Supersonic Data -->
+  <script src="/cloud-resources.js"></script>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>index</title>
+
+  <link rel="stylesheet" href="/components/supersonic/css/supersonic.css" />
+  <link rel="stylesheet" href="/app/common/stylesheets/application.css" />
+  <link rel="import" href="/components/supersonic/components/import.html">
+
+  <script src="http://localhost/cordova.js"></script>
+  <script src="/components/steroids-js/steroids.js"></script>
+  <script src="/components/angular/angular.js"></script>
+  <script src="/components/supersonic/supersonic.js"></script>
+  <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+  
+  <script src="/app/common.js"></script>
+  
+  <script src="/app/consumer.js"></script>
+  
+</head>
+<body ng-app="consumer">
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+  window.addEventListener('WebComponentsReady', function() {
+    supersonic.app.splashscreen.hide();
+  });
+  </script>
+  <!-- Cloud resource definition file for Supersonic Data -->
+  <script src="/cloud-resources.js"></script>
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
@@ -23,36 +58,27 @@
     <script src="/components/supersonic/supersonic.js"></script>
     <script src="/components/webcomponentsjs/webcomponents.js"></script>
 
-    <link rel="stylesheet" href="/stylesheets/application.css">
-    <script src="/scripts/application.js"></script>
 </head>
 
 <body ng-app="SteroidsApplication">
 
-    <!-- <div class="padding" ng-controller="IndexController"> -->
-    <div class="padding">
-
+    <div>
         <super-navbar>
             <super-navbar-title>
                 Consumer Application
             </super-navbar-title>
         </super-navbar>
-
     </div>
 
-    <div class="container">
-        <h1>Consumer</h1>
-<!--         <label class="item">
-            <ul id="messages" class="list-group"></ul>
-        </label> -->
-    </div>
+	<super-navigate view-id="advanced-search">
+		<button class="button button-block button-positive icon-left super-search">Search</button>
+	</super-navigate>
 
-    <!-- <div ng-app ng-controller="msgCtrl" class="item"> -->
     <div class="item" ng-controller="MessageController">
         <ul>
-            <li ng-repeat="msg in messages.message.slice().reverse()" class="item">
+            <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="item">
                 <p class="userId">{{msg.userId}} </p>
-                <p class="subelement">{{msg.message}} </p>
+                <p class="messageBody">{{msg.message}} </p>
                 <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>
                 <p class="subelement">
                     <span ng-repeat="hashes in msg.hashtags">
@@ -62,6 +88,14 @@
             </li>
         </ul>
     </div>
+
+    <div class="item" id="loader">
+    	<p>Load more...</p>
+    </div>
+
+</body>
+</html>
+
 
 </body>
 </html>
