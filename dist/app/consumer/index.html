@@ -61,63 +61,64 @@
 </head>
 
 <body ng-app="SteroidsApplication">
+    <div ng-controller="MessageController">
+        <div>
+            <super-navbar>
+                <super-navbar-title>
+                    Consumer Application
+                </super-navbar-title>
+            </super-navbar>
+        </div>
 
-    <div>
-        <super-navbar>
-            <super-navbar-title>
-                Consumer Application
-            </super-navbar-title>
-        </super-navbar>
-    </div>
+        <button id="topNavButton" onclick="scrollToTop()" ng-click="update()">Back to Top</button>
 
-    <input type="button" id="topNavButton" value="Back to Top" onclick="scrollToTop()">
+        <script>
+            var topButton = document.getElementById("topNavButton");
+            window.onscroll = function (oEvent) {
+                // var mydivpos = document.getElementById("allMessages").offsetTop;
+                var height = window.innerHeight;
+                if(window.pageYOffset > height) {
+                    topButton.style.display = "block";
+                } else {
+                    topButton.style.display = "none";
+                }
+            };
 
-    <script>
-        var topButton = document.getElementById("topNavButton");
-        window.onscroll = function (oEvent) {
-            // var mydivpos = document.getElementById("allMessages").offsetTop;
-            var height = window.innerHeight;
-            if(window.pageYOffset > height) {
-                topButton.style.display = "block";
-            } else {
-                topButton.style.display = "none";
+            var timeOut;
+            function scrollToTop() {
+                if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0) {
+                    window.scrollBy(0,-50);
+                    timeOut=setTimeout('scrollToTop()',10);
+                } else {
+                    clearTimeout(timeOut);
+                }
             }
-        };
 
-        var timeOut;
-        function scrollToTop() {
-            if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0){
-                window.scrollBy(0,-50);
-                timeOut=setTimeout('scrollToTop()',10);
-            }
-            else clearTimeout(timeOut);
-        }
+        </script>
 
-    </script>
+    	<super-navigate view-id="advanced-search">
+    		<button class="button button-block button-positive icon-left super-search">Search</button>
+    	</super-navigate>
 
-	<super-navigate view-id="advanced-search">
-		<button class="button button-block button-positive icon-left super-search">Search</button>
-	</super-navigate>
+        <div id="allMessages" class="padding">
+            <ul>
+                <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
+                    <p class="userId">{{msg.userId}} </p>
+                    <p class="messageBody">{{msg.message}} </p>
+                    <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>
+                    <p class="subelement">
+                        <span ng-repeat="hashes in msg.hashtags">
+                            #{{hashes}}
+                        </span>
+                    </p>
+                </li>
+            </ul>
+        </div>
 
-    <div id="allMessages" class="padding" ng-controller="MessageController">
-        <ul>
-            <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
-                <p class="userId">{{msg.userId}} </p>
-                <p class="messageBody">{{msg.message}} </p>
-                <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>
-                <p class="subelement">
-                    <span ng-repeat="hashes in msg.hashtags">
-                        #{{hashes}}
-                    </span>
-                </p>
-            </li>
-        </ul>
+        <div class="item" id="loader">
+        	<p>Load more...</p>
+        </div>
     </div>
-
-    <div class="item" id="loader">
-    	<p>Load more...</p>
-    </div>
-
 </body>
 </html>
 
