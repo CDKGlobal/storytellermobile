@@ -45,7 +45,7 @@
     <!-- <div ng-app ng-controller="msgCtrl" class="item"> -->
     <div class="item" ng-controller="MessageController">
         <ul>
-            <li ng-repeat="msg in messages.message.slice().reverse()" class="item">
+            <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="item">
                 <p class="userId">{{msg.userId}} </p>
                 <p class="subelement">{{msg.message}} </p>
                 <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>
