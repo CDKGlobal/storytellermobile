@@ -34,7 +34,7 @@
 	width: 80%;
 }
 
-#searchButton, #refreshButton {
+#searchButton, #refreshButton, #goSearch {
 	margin: 0;
 	padding: 0 12px;
 	min-width: 52px;

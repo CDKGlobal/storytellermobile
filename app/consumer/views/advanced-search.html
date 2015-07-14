@@ -1,36 +1,45 @@
 <super-navbar>
-  <super-navbar-title>
-    Advanced Search
-  </super-navbar-title>
+    <super-navbar-title>
+        Advanced Search
+    </super-navbar-title>
 </super-navbar>
 
 <div class="padding">
 
-  <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
+    <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
 
-  <div class="card padding">
-    <h4>Message content</h4>
-    <label class="item item-input">
-      <input type="text" id="namesearch">
-    </label>
-  </div>
+    <div class="padding">
+        <h4>Message content</h4>
+        <label class="item item-input">
+            <input type="text" id="namesearch">
+        </label>
+    </div>
 
-  <div class="card padding">
-    <h4>Hashtag</h4>
-    <label class="item item-input">
-      <input type="text" id="hashtagsearch">
-    </label>
-  </div>
+    <div class="padding">
+        <h4>Filters</h4>
+            <label class="item item-input">
+                <input type="text" id="hashtagsearch">
+            </label>
+        <p>I guess instructions could go here</p>
+    </div>
+    
+    <div class="padding">
+        <h4>Users</h4>
+            <label class="item item-input">
+                <input type="text" id="usersearch">
+            </label>
+    </div>
 
-  <div class="card padding">
-    <h4>User ID</h4>
-    <label class="item item-input">
-      <input type="text" id="usersearch">
-    </label>
-  </div>
+    <div class="padding">
+        <h4>Date Range</h4>
+        <label class="item item-input">
+            From: <input type="text" class="datesearch">
+            To: <input type="text" class="datesearch">
+        </label>
+    </div>
 
-  <div class="card padding">
-    <input type="submit" value="Go!">
-  </div>
+    <div class="padding">
+        <input type="submit" id="goSearch" value="Go!">
+    </div>
 
 </div>
