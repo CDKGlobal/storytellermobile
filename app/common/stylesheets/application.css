@@ -4,14 +4,16 @@
   font-weight: 600;
 }
 
-#loader {
-	display: none;
+.buttonBar {
+	border: solid;
+	border-width: 2px;
+	border-color: white;
 }
 
 .message {
 	border: solid;
 	border-width: 2px;
-	border-color: grey;
+	border-color: gray;
 	border-radius: 5px;
 	padding: 5px;
 	margin-bottom: 2px;
@@ -22,6 +24,31 @@
 	font-size: 12pt !important;
 }
 
+#refreshButton {
+	float: right;
+	width: 20%;
+}
+
+#searchButton {
+	border-width: 5px;
+	width: 80%;
+}
+
+#searchButton, #refreshButton {
+	margin: 0;
+	padding: 0 12px;
+	min-width: 52px;
+	min-height: 47px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: white;
+	border-radius: 2px;
+	vertical-align: top;
+	text-align: center;
+	font-size: 16px;
+	line-height: 42px;
+}
+
 .subelement, .messageBody {
 	padding-left: 10px;
 }
@@ -29,14 +56,14 @@
 #topNavButton {
 	font-size: 9pt;
 	text-align: center;
-	background-color: cyan;
+	background-color: lightgray;
 	border: solid;
 	border-width: 2px;
-	border-color: blue;
-	border-radius: 5px;
-	width: 80px;
-	padding: 5px;
-	right: 10px;
+	border-color: white;
+	border-radius: 2px;
+	width: 100px;
+	padding: 10px;
+	right: 16px;
 	top: 10px;
 	position: fixed;
 	z-index: 100;
