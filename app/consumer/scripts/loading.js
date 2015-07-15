@@ -1,4 +1,4 @@
-window.onload = function() {
+function loadButton() {
 	var topButton = document.getElementById("topNavButton");
 	window.addEventListener("scroll", function (oEvent) {
 		// var mydivpos = document.getElementById("allMessages").offsetTop;
