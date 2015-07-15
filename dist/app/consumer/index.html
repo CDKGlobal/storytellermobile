@@ -77,10 +77,14 @@
         
         <div class="buttonBar">
         	<super-navigate view-id="advanced-search">
-        		<button id="searchButton" class="button-light icon super-search">  Search</button>
+        		<button id="searchButton" class="icon super-search">  Search</button>
         	</super-navigate>
 
-            <button id="refreshButton" class="button-light icon super-refresh" ng-click="update()"></button>
+            <button id="refreshButton" class="icon super-refresh" ng-click="update()"></button>
+        </div>
+
+        <div class="loading-box content" ng-hide="load.spinner">
+            <i class="super-loading-c"></i>  Loading...
         </div>
 
         <div id="allMessages" class="padding">
@@ -101,6 +105,7 @@
     </div>
 </body>
 </html>
+
 
 
 </body>

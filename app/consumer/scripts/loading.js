@@ -12,13 +12,11 @@ window.onload = function() {
 }
 var timeOut;
 function scrollToTop() {
-	if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0) {
-		window.scrollBy(0,-50);
-		timeOut=setTimeout('scrollToTop()',10);
+	if (document.body.scrollTop != 0 || document.documentElement.scrollTop != 0) {
+		window.scrollBy(0, -50);
+		timeOut = setTimeout('scrollToTop()', 10);
 	} else {
 		clearTimeout(timeOut);
+		document.getElementById("refreshButton").click();
 	}
-               // show rotating thinger at the top
-               // reload page
-                // hide the thinger
 }
