@@ -22,13 +22,11 @@
 }
 
 .message {
-	border: solid;
+	border-bottom: solid;
 	border-width: 2px;
-	border-color: gray;
-	border-radius: 5px;
+	border-color: lightgray;
 	padding: 5px;
 	margin-bottom: 2px;
-	background-color: lightcyan;
 }
 
 .messageBody {
@@ -70,14 +68,13 @@
 }
 
 #topNavButton {
-	font-size: 9pt;
+	font-size: 10pt;
 	text-align: center;
 	background-color: lightgray;
 	border: solid;
 	border-width: 2px;
 	border-color: white;
-	border-radius: 2px;
-	width: 100px;
+	border-radius: 10px;
 	padding: 10px;
 	right: 16px;
 	top: 10px;
