@@ -10,6 +10,11 @@
 	border-color: white;
 }
 
+.hashtag {
+	color: blue;
+	text-decoration: underline;
+}
+
 .loading-box {
     height:100%;
     display: -webkit-box;
@@ -84,4 +89,5 @@
 .userId {
 	font-size: 10pt !important;
 	font-weight: bold !important;
+	text-decoration: underline;
 }

@@ -15,8 +15,8 @@ module.exports =
       location: "consumer#settings"
     }
     {
-      title: "Internet"
-      id: "internet"
+      title: "Filters"
+      id: "hashtags"
       location: "consumer#settings" # URLs are supported!
     }
   ]

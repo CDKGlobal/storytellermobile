@@ -68,6 +68,6 @@ tab-bar-item#index {
   background-image: url(icons/home.svg);
 }
 
-tab-bar-item#internet {
-  background-image: url(icons/search.svg);
+tab-bar-item#hashtags {
+  background-image: url(icons/pound.svg);
 }

@@ -83,7 +83,7 @@
                     <p class="messageBody">{{msg.message}} </p>
                     <p class="subelement">{{msg.timeStamp | date:'hh:mma - dd MMM yyyy'}} </p>
                     <p class="subelement">
-                        <span ng-repeat="hashes in msg.hashtags">
+                        <span ng-repeat="hashes in msg.hashtags" class="hashtag">
                             #{{hashes}}
                         </span>
                     </p>

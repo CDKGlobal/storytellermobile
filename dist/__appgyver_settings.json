@@ -20,8 +20,8 @@
     },
     {
       "position": 2,
-      "id": "internet",
-      "title": "Internet",
+      "id": "hashtags",
+      "title": "Filters",
       "target_url": "http://localhost/app/consumer/settings.html"
     }
   ],
