@@ -26,7 +26,7 @@
     padding-top: 10px;
 }
 
-.message {
+.message, .result {
 	border-bottom: solid;
 	border-width: 2px;
 	border-color: lightgray;

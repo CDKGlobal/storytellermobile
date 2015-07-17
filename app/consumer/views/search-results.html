@@ -1,0 +1,26 @@
+<super-navbar>
+    <super-navbar-title>
+        Search Results
+    </super-navbar-title>
+</super-navbar>
+
+<div class="padding" ng-controller="ResultController">
+
+    <h4>Placeholder</h4>
+
+    <div id="allResults" class="padding">
+        <ul>
+            <li ng-repeat="result in allResults.messages" class="result">
+                <p>{{result.userId}} </p>
+                <p>{{result.message}} </p>
+                <p>{{result.timeStamp}} </p>
+                <p>
+                    <span ng-repeat="filters in result.hashtags" class="hashtag">
+                        #{{filters}}
+                    </span>
+                </p>
+            </li>
+        </ul>
+    </div>
+
+</div>

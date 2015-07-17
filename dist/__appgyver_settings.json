@@ -3,6 +3,10 @@
     {
       "id": "advanced-search",
       "location": "http://localhost/app/consumer/advanced-search.html"
+    },
+    {
+      "id": "search-results",
+      "location": "http://localhost/app/consumer/search-results.html"
     }
   ],
   "tabs": [

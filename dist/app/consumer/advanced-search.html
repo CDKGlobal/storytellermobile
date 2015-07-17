@@ -37,21 +37,21 @@
     </super-navbar-title>
 </super-navbar>
 
-<div class="padding">
+<div class="padding" ng-controller="SearchController">
 
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
 
     <div class="padding">
         <h4>Message content</h4>
         <label class="item item-input">
-            <input type="text" id="namesearch">
+            <input type="text" id="namesearch" ng-model="search.msgcontent">
         </label>
     </div>
 
     <div class="padding">
         <h4>Filters</h4>
             <label class="item item-input">
-                <input type="text" id="hashtagsearch">
+                <input type="text" id="hashtagsearch" ng-model="search.filters">
             </label>
         <p>I guess instructions could go here</p>
     </div>
@@ -59,20 +59,22 @@
     <div class="padding">
         <h4>Users</h4>
             <label class="item item-input">
-                <input type="text" id="usersearch">
+                <input type="text" id="usersearch" ng-model="search.user">
             </label>
     </div>
 
     <div class="padding">
         <h4>Date Range</h4>
         <label class="item item-input">
-            From: <input type="text" class="datesearch">
-            To: <input type="text" class="datesearch">
+            From: <input type="text" class="datesearch" ng-model="search.startdate">
+            To: <input type="text" class="datesearch" ng-model="search.enddate">
         </label>
     </div>
 
     <div class="padding">
-        <input type="submit" id="goSearch" value="Go!">
+        <super-navigate view-id="search-results">
+            <button id="goSearch" ng-click="search()">Go!</button>
+        </super-navigate>
     </div>
 
 </div>
