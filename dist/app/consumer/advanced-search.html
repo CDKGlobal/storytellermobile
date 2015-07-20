@@ -37,7 +37,7 @@
     </super-navbar-title>
 </super-navbar>
 
-<div class="padding" ng-controller="SearchController">
+<div class="padding" ng-app="SteroidsApplication" ng-controller="SearchController">
 
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
 
@@ -71,10 +71,29 @@
         </label>
     </div>
 
-    <div class="padding">
+<!--     <div class="padding">
         <super-navigate view-id="search-results">
             <button id="goSearch" ng-click="search()">Go!</button>
         </super-navigate>
+    </div> -->
+
+    <div class="padding">
+        <button id="goSearch" ng-click="search()">Go!</button>
+    </div>
+
+    <div id="allResults" class="padding" ng-hide="results.hide">
+        <ul>
+            <li ng-repeat="result in allResults.messages" class="result">
+                <p>{{result.userId}} </p>
+                <p>{{result.message}} </p>
+                <p>{{result.timeStamp}} </p>
+                <p>
+                    <span ng-repeat="filters in result.hashtags" class="hashtag">
+                        #{{filters}}
+                    </span>
+                </p>
+            </li>
+        </ul>
     </div>
 
 </div>

@@ -3,25 +3,7 @@ angular
 	// Declare any module-specific AngularJS dependencies here
 	'common'
 ])
-.service('sharedProperties', function() {
-	var paramArr = {
-		userId: '',
-		mcontent: '',
-		filters: '',
-		start: '',
-		end: ''
-	};
-
-	return {
-		getArr: function() {
-			return paramArr;
-		},
-		setArr: function(value) {
-			paramArr = value;
-		}
-	}
-})
-.controller('MessageController', function($scope, supersonic, $http, $timeout) {
+.controller('MessageController', function($scope, supersonic, $http) {
 	// ['supersonic'] is a dependency of SteroidsApplication
 	$scope.load = { spinner: false };
 	$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
@@ -44,7 +26,7 @@ angular
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
 			$scope.load.spinner = true;
-			$scope.$apply();
+			// $scope.$apply();
 		})
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);
@@ -52,7 +34,8 @@ angular
 		});
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, sharedProperties) {
+.controller('SearchController', function($scope, supersonic, $http) {
+	$scope.results = { hide: true };
 	// ['supersonic'] is a dependency of SteroidsApplication
 	$scope.search = function() {
 		supersonic.logger.log("you tried to search!");
@@ -78,33 +61,20 @@ angular
 			end = "";
 		}
 
-		var params = {
-			'userId': user,
-			'mcontent': mcontent,
-			'filters': filters,
-			'start': start,
-			'end': end
-		};
-		sharedProperties.setArr(params);
-		supersonic.logger.log(sharedProperties.getArr());
-	}
-})
-.controller('ResultController', function($rootScope, $scope, supersonic, $http, $timeout, sharedProperties) {
+		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?tags=" + mcontent + "&callback=JSON_CALLBACK";
 
-	$rootScope.$watchCollection('sharedProperties.getArr()', function(newVal, oldVal) {
-		supersonic.logger.log("value changed:");
-		
-		var params = sharedProperties.getArr();
-		supersonic.logger.log(params.mcontent);
+		console.log(url);
 
-		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?tags=" + params.mcontent + "&callback=JSON_CALLBACK";
 		$http.jsonp(url)
-		.success(function(data, status, headers, config, scope) {
-			supersonic.logger.log("Search success! " + status);
-			$scope.allResults = data;
-		})
-		.error(function(data, status, headers, config) {
-			supersonic.logger.log("Error: " + status);
-		});
-	});
+			.success(function(data, status, headers, config, scope) {
+				supersonic.logger.log("Search success! " + status);
+				// sharedProperties.set(data);
+				$scope.allResults = data;
+				$scope.results.hide = false;
+			})
+			.error(function(data, status, headers, config) {
+				supersonic.logger.log("Error: " + status);
+			});
+
+	}
 });

@@ -29,10 +29,6 @@ module.exports =
       id: "advanced-search"
       location: "consumer#advanced-search"
     }
-    {
-      id: "search-results"
-      location: "consumer#search-results"
-    }
   ]
 
   # drawers:
