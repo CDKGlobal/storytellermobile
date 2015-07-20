@@ -68,6 +68,35 @@
 	background-color: lightgray;
 }
 
+.searchItem {
+	margin: 5px 0;
+	border: solid;
+	border-width: 2px;
+	border-radius: 5px;
+	border-color: gray;
+}
+
+.searchItem label {
+	float: left;
+	margin: 6px;
+	width: 135px;
+}
+
+.searchItem span {
+	display: block;
+	overflow: hidden;
+	background-color: blue;
+
+}
+
+.searchItem input {
+	width: 100%;
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: gray;
+	padding-left: 5px;
+}
+
 .subelement, .messageBody {
 	padding-left: 10px;
 }
