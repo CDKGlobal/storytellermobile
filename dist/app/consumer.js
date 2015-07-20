@@ -73,14 +73,12 @@ angular
 		$http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Search success! " + status);
-				// sharedProperties.set(data);
 				$scope.allResults = data;
 				$scope.results.hide = false;
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status);
 			});
-
 	}
 });
 function loadButton() {

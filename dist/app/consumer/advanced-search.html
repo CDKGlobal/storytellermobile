@@ -41,41 +41,30 @@
 
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
 
-    <div class="padding">
-        <h4>Message content</h4>
-        <label class="item item-input">
-            <input type="text" id="namesearch" ng-model="search.msgcontent">
-        </label>
+    <div class="searchItem">  
+        <label>Message content:</label>
+        <span><input type="text" ng-model="search.msgcontent"></span>
     </div>
 
-    <div class="padding">
-        <h4>Filters</h4>
-            <label class="item item-input">
-                <input type="text" id="hashtagsearch" ng-model="search.filters">
-            </label>
-        <p>I guess instructions could go here</p>
+    <div class="searchItem">
+        <label>Filters:</label>
+        <span><input type="text" ng-model="search.filters"></span>
     </div>
     
-    <div class="padding">
-        <h4>Users</h4>
-            <label class="item item-input">
-                <input type="text" id="usersearch" ng-model="search.user">
-            </label>
+    <div class="searchItem">
+        <label>User:</label>
+        <span><input type="text" ng-model="search.user"></span>
     </div>
 
-    <div class="padding">
-        <h4>Date Range</h4>
-        <label class="item item-input">
-            From: <input type="text" class="datesearch" ng-model="search.startdate">
-            To: <input type="text" class="datesearch" ng-model="search.enddate">
-        </label>
+    <h4>Date Range</h4>
+    <div class="searchItem">
+        <label>From:</label>
+        <span><input type="text" ng-model="search.startdate"></span>
     </div>
-
-<!--     <div class="padding">
-        <super-navigate view-id="search-results">
-            <button id="goSearch" ng-click="search()">Go!</button>
-        </super-navigate>
-    </div> -->
+    <div class="searchItem">
+        <label>To:</label>
+        <span><input type="text" ng-model="search.enddate"></span>
+    </div>
 
     <div class="padding">
         <button id="goSearch" ng-click="search()">Go!</button>
@@ -83,7 +72,7 @@
 
     <div id="allResults" class="padding" ng-hide="results.hide">
         <ul>
-            <li ng-repeat="result in allResults.messages" class="result">
+            <li ng-repeat="result in allResults.messages.slice().reverse()" class="result">
                 <p>{{result.userId}} </p>
                 <p>{{result.message}} </p>
                 <p>{{result.timeStamp}} </p>
