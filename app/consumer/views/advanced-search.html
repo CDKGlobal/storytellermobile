@@ -37,19 +37,23 @@
         <button id="goSearch" ng-click="search()">Go!</button>
     </div>
 
-    <div id="allResults" class="padding" ng-hide="results.hide">
+    <div id="allResults" class="padding">
         <ul>
             <li ng-repeat="result in allResults.messages.slice().reverse()" class="result">
-                <p>{{result.userId}} </p>
-                <p>{{result.message}} </p>
-                <p>{{result.timeStamp}} </p>
-                <p>
+                <p class="userId">{{result.userId}} </p>
+                <p class="messageBody">{{result.message}} </p>
+                <p class="subelement">{{result.timeStamp}} </p>
+                <p class="subelement">
                     <span ng-repeat="filters in result.hashtags" class="hashtag">
                         #{{filters}}
                     </span>
                 </p>
             </li>
         </ul>
+    </div>
+
+    <div class="padding" ng-hide="found.none">
+        <p>No results found.</p>
     </div>
 
 </div>
