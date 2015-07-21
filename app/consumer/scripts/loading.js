@@ -1,5 +1,5 @@
 function loadButton() {
-	var topButton = document.getElementById("topNavButton");
+	var topButton = document.getElementById("indexNavButton");
 	window.addEventListener("scroll", function (oEvent) {
 		// var mydivpos = document.getElementById("allMessages").offsetTop;
 		var height = window.innerHeight;

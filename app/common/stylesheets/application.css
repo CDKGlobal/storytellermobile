@@ -70,30 +70,25 @@
 
 .searchItem {
 	margin: 5px 0;
-	border: solid;
-	border-width: 2px;
-	border-radius: 5px;
-	border-color: gray;
 }
 
 .searchItem label {
 	float: left;
 	margin: 6px;
-	width: 135px;
+	width: 126px;
 }
 
 .searchItem span {
 	display: block;
 	overflow: hidden;
-	background-color: blue;
-
 }
 
 .searchItem input {
 	width: 100%;
-	border-left-style: solid;
-	border-left-width: 2px;
-	border-left-color: gray;
+	border-style: solid;
+	border-width: 2px;
+	border-color: lightgray;
+	border-radius: 0;
 	padding-left: 5px;
 }
 
@@ -101,7 +96,7 @@
 	padding-left: 10px;
 }
 
-#topNavButton {
+#indexNavButton, #searchNavButton {
 	font-size: 18pt;
 	color: gray;
 	text-align: center;
