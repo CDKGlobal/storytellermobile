@@ -33,7 +33,7 @@ angular
 	// $scope.results = { hide: true };
 	$scope.found = { none: true };
 	$scope.search = function() {
-		supersonic.logger.log("you tried to search!");
+		document.activeElement.blur();
 		var user = $scope.search.userId;
 		var mcontent = $scope.search.msgcontent;
 		var filters = $scope.search.filters;
@@ -45,7 +45,7 @@ angular
 			user = "";
 		}
 		if(angular.isDefined(mcontent)) {
-			var contentParams = mcontent.split(" ");
+			var contentParams = mcontent.match(/\w+|"(?:\\"|[^"])+"/g);
 			var contentQuery = contentParams[0];
 			for(var i = 1; i < contentParams.length; i++) {
 				contentQuery += "," + contentParams[i];
@@ -63,21 +63,18 @@ angular
 
 		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?tags=" + contentQuery + "&callback=JSON_CALLBACK";
 
-		console.log(url);
-
 		$http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Search success! " + status);
 				$scope.allResults = data;
 				if(data.messages.length === 0) {
-					console.log("content: " + mcontent + ".");
 					$scope.found.none = false;
 				} else {
 					$scope.found.none = true;
 				}
 			})
 			.error(function(data, status, headers, config) {
-				supersonic.logger.log("Error: " + status);
+				supersonic.logger.log("Search error: " + status);
 			});
 	}
 });
