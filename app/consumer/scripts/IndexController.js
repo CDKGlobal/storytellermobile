@@ -5,15 +5,6 @@ angular
 ])
 .controller('MessageController', function($scope, supersonic, $http, $sce) {
 	$scope.index = { spinner: false };
-	$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
-	.success(function(data, status, headers, config, scope) {
-		$scope.allMsg = data;
-		$scope.index.spinner = true;
-	})
-	.error(function(data, status, headers, config) {
-		supersonic.logger.log("Error: " + status);
-		$scope.wLat = "Error: no connection";
-	});
 
 	$scope.update = function () {
 		$scope.index.spinner = false;
@@ -28,6 +19,8 @@ angular
 			supersonic.logger.log("Error: " + status);
 		});
 	}
+
+	$scope.update();
 
 	$scope.modLink = function(message) {
 		// John Gruber's regex, modified for JS
@@ -74,7 +67,8 @@ angular
 			end = "";
 		}
 
-		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?query=message=" + contentQuery + "%26tags=" + filterQuery + "&callback=JSON_CALLBACK";
+		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?query=message=" + encodeURIComponent(contentQuery)
+			 + "%26tags=" + encodeURIComponent(filterQuery) + "&callback=JSON_CALLBACK";
 		console.log(url);
 
 		$http.jsonp(url)
