@@ -8,7 +8,8 @@
 
     <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
     <link rel="stylesheet" href="/app/common/stylesheets/application.css">
-    <link rel="import" href="/components/supersonic/components/import.html"> 
+    <link rel="import" href="/components/supersonic/components/import.html">
+
     <script type="text/javascript" src="../scripts/loading.js"></script>
 </head>
 
@@ -43,7 +44,7 @@
             <ul>
                 <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
                     <p class="userId">{{msg.userId}} </p>
-                    <p class="messageBody">{{msg.message}} </p>
+                    <p class="messageBody" ng-bind-html="modLink(msg.message)"></p>
                     <p class="subelement">{{msg.timeStamp}} </p>
                     <p class="subelement">
                         <span ng-repeat="hashes in msg.hashtags" class="hashtag">
