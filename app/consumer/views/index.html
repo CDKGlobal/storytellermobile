@@ -42,7 +42,7 @@
 
         <div id="allMessages" class="padding">
             <ul>
-                <li ng-repeat="msg in allMsg.messages.slice().reverse()" class="message">
+                <li ng-repeat="msg in allMsg.messages.slice().reverse()" ng-controller="LinkController" class="message">
                     <p class="userId">{{msg.userId}} </p>
                     <p class="messageBody" ng-bind-html="modLink(msg.message)"></p>
                     <p class="subelement">{{msg.timeStamp}} </p>
