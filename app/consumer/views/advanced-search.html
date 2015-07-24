@@ -15,18 +15,9 @@
 
     <form>
         <div class="searchItem">  
-            <label>Message content:</label>
-            <span><input type="text" ng-model="search.msgcontent"></span>
-        </div>
-
-        <div class="searchItem">
-            <label>Filters:</label>
-            <span><input type="text" ng-model="search.filters"></span>
-        </div>
-        
-        <div class="searchItem">
-            <label>User:</label>
-            <span><input type="text" ng-model="search.user"></span>
+            <label>Keywords:</label>
+            <span><input type="text" ng-model="search.keywords"></span>
+            <p class="comment">Searches message content and hashtags</p>
         </div>
 
         <h4>Date Range</h4>
@@ -46,9 +37,9 @@
 
     <div id="allResults" class="padding">
         <ul>
-            <li ng-repeat="result in allResults.messages.slice().reverse()" class="result">
+            <li ng-repeat="result in allResults.messages.slice().reverse()" ng-controller="LinkController" class="result">
                 <p class="userId">{{result.userId}} </p>
-                <p class="messageBody">{{result.message}} </p>
+                <p class="messageBody" ng-bind-html="modLink(result.message)"></p>
                 <p class="subelement">{{result.timeStamp}} </p>
                 <p class="subelement">
                     <span ng-repeat="filters in result.hashtags" class="hashtag">

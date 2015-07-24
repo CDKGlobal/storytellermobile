@@ -10,6 +10,10 @@
 	border-color: white;
 }
 
+.comment {
+	padding-left: 80px;
+}
+
 .hashtag {
 	color: blue;
 	text-decoration: underline;
@@ -75,7 +79,7 @@
 .searchItem label {
 	float: left;
 	margin: 6px;
-	width: 126px;
+	width: 70px;
 }
 
 .searchItem span {
