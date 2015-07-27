@@ -40,11 +40,11 @@ angular
 				contentQuery += "," + contentParams[i];
 			}
 		}
-		if(!angular.isDefined(start)) {
-			start = "";
+		if(angular.isDefined(start)) {
+			startQuery = start;
 		}
-		if(!angular.isDefined(end)) {
-			end = "";
+		if(angular.isDefined(end)) {
+			endQuery = end;
 		}
 
 		var url = "http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + encodeURIComponent(contentQuery) 
