@@ -9,7 +9,7 @@ angular
 	$scope.update = function () {
 		$scope.index.spinner = false;
 		supersonic.logger.log("updating...");
-		$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
+		var promise = $http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
 		.success(function(data, status, headers, config, scope) {
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
@@ -18,8 +18,8 @@ angular
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);
 		});
+		return promise
 	}
-	$scope.update();
 })
 .controller('SearchController', function($scope, supersonic, $http) {
 	// $scope.results = { hide: true };
@@ -48,7 +48,7 @@ angular
 		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?query=" + encodeURIComponent(contentQuery) + "&callback=JSON_CALLBACK";
 		console.log(url);
 
-		$http.jsonp(url)
+		var promise = $http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Search success! " + status);
 				$scope.allResults = data;
@@ -61,6 +61,7 @@ angular
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Search error: " + status);
 			});
+		return promise;
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
