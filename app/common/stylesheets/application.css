@@ -11,7 +11,24 @@
 }
 
 .comment {
-	padding-left: 80px;
+	padding-left: 85px;
+}
+
+#filterButton {
+	margin: 10px;
+}
+
+#filters button {
+	float: right;
+	border: none;
+	background-color: transparent;
+}
+
+#filters li {
+	border: solid 1px gray;
+	border-radius: 2px;
+	padding: 2px 5px;
+	margin: 5px;
 }
 
 .hashtag {
@@ -47,7 +64,7 @@
 	width: 20%;
 }
 
-#refreshButton:active, #searchButton:active, #goSearch:active {
+#refreshButton:active, #searchButton:active, #goSearch:active, .delete#active {
 	background-color: darkgray;
 }
 

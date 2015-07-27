@@ -30,6 +30,8 @@ angular
 		var start = $scope.search.startdate;
 		var end = $scope.search.enddate;
 		var contentQuery = "";
+		var startQuery = "";
+		var endQuery = "";
 
 		if(angular.isDefined(keywords)) {
 			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
@@ -45,8 +47,9 @@ angular
 			end = "";
 		}
 
-		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?query=" + encodeURIComponent(contentQuery) + "&callback=JSON_CALLBACK";
-		console.log(url);
+		var url = "http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + encodeURIComponent(contentQuery) 
+			+ "&start=" + encodeURIComponent(startQuery) + "&end=" + encodeURIComponent(endQuery) 
+			+ "&callback=JSON_CALLBACK";
 
 		var promise = $http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
@@ -69,7 +72,6 @@ angular
 		// John Gruber's regex, modified for JS
 		var regex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
 		var modified = message.replace(regex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
-		console.log(modified);
 		return $sce.trustAsHtml(modified);
 	}
 });
