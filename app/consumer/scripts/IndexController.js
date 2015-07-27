@@ -33,7 +33,8 @@ angular
 		var startQuery = "";
 		var endQuery = "";
 
-		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK";
+		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
+		var addOn = "messages?callback=JSON_CALLBACK";
 
 		if(angular.isDefined(start)) {
 			startQuery = start;
@@ -48,14 +49,16 @@ angular
 			for(var i = 1; i < contentParams.length; i++) {
 				contentQuery += "," + contentParams[i];
 			}
-			url = "http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + encodeURIComponent(contentQuery) 
+			addOn = "search?query=" + encodeURIComponent(contentQuery) 
 				+ "&start=" + encodeURIComponent(startQuery) + "&end=" + encodeURIComponent(endQuery) 
 				+ "&callback=JSON_CALLBACK";
 		} else {
 			// times are defined, content is not
-			url = "http://fleet.ord.cdk.com/storytellerconsumer/time?start=" + encodeURIComponent(startQuery) 
+			addOn = "time?start=" + encodeURIComponent(startQuery) 
 				+ "&end=" + encodeURIComponent(endQuery) + "&callback=JSON_CALLBACK";
 		}
+
+		var url = baseUrl + addOn;
 
 		var promise = $http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
