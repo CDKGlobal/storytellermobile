@@ -14,15 +14,7 @@ module.exports =
       id: "settings"
       location: "consumer#settings"
     }
-    {
-      title: "Filters"
-      id: "hashtags"
-      location: "consumer#settings" # URLs are supported!
-    }
   ]
-
-  # rootView:
-  #   location: "example#getting-started"
 
   preloads: [
     {
@@ -30,15 +22,3 @@ module.exports =
       location: "consumer#advanced-search"
     }
   ]
-
-  # drawers:
-  #   left:
-  #     id: "leftDrawer"
-  #     location: "example#drawer"
-  #     showOnAppLoad: false
-  #   options:
-  #     animation: "swingingDoor"
-  #
-  # initialView:
-  #   id: "initialView"
-  #   location: "example#initial-view"
