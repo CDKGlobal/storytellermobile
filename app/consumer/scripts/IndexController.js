@@ -33,23 +33,29 @@ angular
 		var startQuery = "";
 		var endQuery = "";
 
-		if(angular.isDefined(keywords)) {
-			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-			contentQuery = contentParams[0];
-			for(var i = 1; i < contentParams.length; i++) {
-				contentQuery += "," + contentParams[i];
-			}
-		}
+		var url = "http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK";
+
 		if(angular.isDefined(start)) {
 			startQuery = start;
 		}
 		if(angular.isDefined(end)) {
 			endQuery = end;
 		}
-
-		var url = "http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + encodeURIComponent(contentQuery) 
-			+ "&start=" + encodeURIComponent(startQuery) + "&end=" + encodeURIComponent(endQuery) 
-			+ "&callback=JSON_CALLBACK";
+		if(angular.isDefined(keywords)) {
+			// all are defined or empty
+			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
+			contentQuery = contentParams[0];
+			for(var i = 1; i < contentParams.length; i++) {
+				contentQuery += "," + contentParams[i];
+			}
+			url = "http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + encodeURIComponent(contentQuery) 
+				+ "&start=" + encodeURIComponent(startQuery) + "&end=" + encodeURIComponent(endQuery) 
+				+ "&callback=JSON_CALLBACK";
+		} else {
+			// times are defined, content is not
+			url = "http://fleet.ord.cdk.com/storytellerconsumer/time?start=" + encodeURIComponent(startQuery) 
+				+ "&end=" + encodeURIComponent(endQuery) + "&callback=JSON_CALLBACK";
+		}
 
 		var promise = $http.jsonp(url)
 			.success(function(data, status, headers, config, scope) {
