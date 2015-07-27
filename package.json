@@ -4,6 +4,11 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "grunt-steroids": "1.x"
+  	"karma-coverage": "0.2.1",
+  	"karma-phantomjs-launcher": "0.1.4",
+  	"karma-jasmine": "~0.1.5",
+    "grunt-karma": "^0.12.0",
+    "grunt-steroids": "1.x",
+    "karma": "^0.13.2"
   }
 }
