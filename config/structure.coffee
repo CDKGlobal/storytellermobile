@@ -14,11 +14,11 @@ module.exports =
       id: "settings"
       location: "consumer#settings"
     }
-    {
-      title: "Filters"
-      id: "hashtags"
-      location: "consumer#settings" # URLs are supported!
-    }
+#    {
+#      title: "Filters"
+#      id: "hashtags"
+#      location: "consumer#settings" # URLs are supported!
+#    }
   ]
 
   # rootView:
