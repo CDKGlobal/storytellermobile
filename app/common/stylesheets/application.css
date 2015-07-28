@@ -19,15 +19,19 @@
 }
 
 #filters button {
+	font-size: 12pt;
+	color: gray;
 	float: right;
 	border: none;
 	background-color: transparent;
 }
 
 #filters li {
+	font-size: 12pt;
 	border: solid 1px gray;
+	border-color: lightgray;
 	border-radius: 2px;
-	padding: 2px 5px;
+	padding: 5px 8px;
 	margin: 5px;
 }
 
