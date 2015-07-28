@@ -24,6 +24,11 @@ angular
 .controller('SearchController', function($scope, supersonic, $http) {
 	// $scope.results = { hide: true };
 	$scope.found = { none: true };
+
+	$scope.checkValid = function(item) {
+		return (angular.isDefined(item) && item != "");	
+	}
+
 	$scope.search = function() {
 		document.activeElement.blur();
 		var keywords = $scope.search.keywords;
@@ -34,37 +39,55 @@ angular
 		var endQuery = "";
 
 		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
-		var addOn = "messages?callback=JSON_CALLBACK";
+		var messageAddOn = "messages?";
+		var searchAddOn = "search?";
+		var timeAddOn = "time?";
+		var callback = "callback=JSON_CALLBACK";
 
-		if(angular.isDefined(start)) {
-			startQuery = start;
-		}
-		if(angular.isDefined(end)) {
-			endQuery = end;
-		}
-		if(angular.isDefined(keywords)) {
-			// all are defined or empty
+		console.log(keywords);
+
+		if($scope.checkValid(keywords)) {
 			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-			contentQuery = contentParams[0];
+			contentQuery = "query=" + contentParams[0];
 			for(var i = 1; i < contentParams.length; i++) {
 				contentQuery += "," + contentParams[i];
 			}
-			addOn = "search?query=" + encodeURIComponent(contentQuery) 
-				+ "&start=" + encodeURIComponent(startQuery) + "&end=" + encodeURIComponent(endQuery) 
-				+ "&callback=JSON_CALLBACK";
+			baseUrl += searchAddOn + contentQuery;
+
+			if($scope.checkValid(start)) {
+				startQuery = "&start=" + start;
+				baseUrl += startQuery;
+			}
+			if($scope.checkValid(end)) {
+				endQuery = "&end=" + end;
+				baseUrl += endQuery;
+			}
+			baseUrl += "&" + callback;
+		} else if($scope.checkValid(start) || $scope.checkValid(end)) {
+			baseUrl += timeAddOn;
+			if($scope.checkValid(start)) {
+				startQuery = "start=" + start;
+				baseUrl += startQuery;
+				if($scope.checkValid(end)) {
+					endQuery = "&end=" + end;
+					baseUrl += endQuery;
+				}
+			} else {
+				endQuery = "end=" + end;
+				baseUrl += endQuery;
+			}
+			baseUrl += "&" + callback;
 		} else {
-			// times are defined, content is not
-			addOn = "time?start=" + encodeURIComponent(startQuery) 
-				+ "&end=" + encodeURIComponent(endQuery) + "&callback=JSON_CALLBACK";
+			baseUrl += messageAddOn + callback;
 		}
 
-		var url = baseUrl + addOn;
+		console.log(baseUrl);
 
-		var promise = $http.jsonp(url)
+		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Search success! " + status);
 				$scope.allResults = data;
-				if(data.messages.length === 0) {
+				if(data == null || data.messages.length === 0) {
 					$scope.found.none = false;
 				} else {
 					$scope.found.none = true;
