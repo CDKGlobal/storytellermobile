@@ -77,7 +77,7 @@ describe("SearchController", function() {
 	});
 
 	it("should behave properly when search results are found", function(done) {
-		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=&start=&end=&callback=JSON_CALLBACK')
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/time?start=&end=&callback=JSON_CALLBACK')
 			.respond({
 				"messages": [{
 					"userId": "test_userid",
@@ -103,7 +103,7 @@ describe("SearchController", function() {
 	});
 
 	it("should behave properly when search results aren't found", function(done) {
-		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=&start=&end=&callback=JSON_CALLBACK')
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/time?start=&end=&callback=JSON_CALLBACK')
 			.respond({
 				"messages": []
 		});
@@ -117,7 +117,6 @@ describe("SearchController", function() {
 });
 
 describe("LinkController", function() {
-
 	var scope, createController, controller, sce;
 
 	beforeEach(angular.mock.module("consumer", "supersonic"));
