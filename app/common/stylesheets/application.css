@@ -21,23 +21,17 @@
 }
 
 #filters button {
-	float: left;
-/*	border: none;
-	background-color: transparent;*/
-	padding: 8px 10px;
+	float: right;
+	border: none;
+	background-color: transparent;
 }
 
-#filters input {
-	float: left;
+#filters li, #filterInput {
 	border: solid 1px gray;
-	border-radius: 2px;
-}
-
-#filters li {
+	width: 100%;
 	clear: both;
 	padding: 5px 5px;
 	margin: 5px;
-	/*background-color: yellow;*/
 	display: block;
 }
 

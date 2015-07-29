@@ -9,8 +9,13 @@
     <h3>Permanent filters</h3>
 
     <div class="padding">
-        <ul id="filters" ng-bind-html="insertFilter">
+        <ul id="filters">
+            <li ng-repeat="filter in filterList">
+                {{filter}}
+                <button class="icon super-close-circled" ng-click="deleteFilter(filter)"></button>
+            </li>
         </ul>
+        <input type="text" id="filterInput" ng-model="newInput"/>
         <input type="button" value="Add filter" id="filterButton" ng-click="addFilter()"/>
     </div>
 
