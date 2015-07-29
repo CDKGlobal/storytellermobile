@@ -1,4 +1,4 @@
-<div class="padding">
+<div class="padding" ng-controller='SettingsController'>
 
     <super-navbar>
         <super-navbar-title>
@@ -9,9 +9,9 @@
     <h3>Permanent filters</h3>
 
     <div class="padding">
-        <ul id="filters">
+        <ul id="filters" ng-bind-html="insertFilter">
         </ul>
-        <input type="button" value="Add filter" id="filterButton" onclick="addFilter()"/>
+        <input type="button" value="Add filter" id="filterButton" ng-click="addFilter()"/>
     </div>
 
 

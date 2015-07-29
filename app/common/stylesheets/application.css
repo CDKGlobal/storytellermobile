@@ -15,24 +15,30 @@
 }
 
 #filterButton {
-	margin: 10px;
+	margin: 0px 15px;
+	clear: both;
+	display: block;
 }
 
 #filters button {
-	font-size: 12pt;
-	color: gray;
-	float: right;
-	border: none;
-	background-color: transparent;
+	float: left;
+/*	border: none;
+	background-color: transparent;*/
+	padding: 8px 10px;
+}
+
+#filters input {
+	float: left;
+	border: solid 1px gray;
+	border-radius: 2px;
 }
 
 #filters li {
-	font-size: 12pt;
-	border: solid 1px gray;
-	border-color: lightgray;
-	border-radius: 2px;
-	padding: 5px 8px;
+	clear: both;
+	padding: 5px 5px;
 	margin: 5px;
+	/*background-color: yellow;*/
+	display: block;
 }
 
 .hashtag {
