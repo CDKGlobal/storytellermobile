@@ -22,15 +22,15 @@
             </super-navbar>
         </div>
 
-        <button id="indexNavButton" class="icon-left super-ios-arrow-up" onclick="scrollToTop()"></button>
+        <button id="indexNavButton" class="icon-left super-ios-arrow-up" onclick="loadAllButtons.scrollToTop()"></button>
         <script type="text/javascript">
-            loadButton("index");
+            loadAllButtons.loadButton("index");
         </script>
         
         <div class="buttonBar">
-        	<super-navigate view-id="advanced-search">
-        		<button id="searchButton" class="icon super-search">  Search</button>
-        	</super-navigate>
+            <super-navigate view-id="advanced-search">
+                <button id="searchButton" class="icon super-search">  Search</button>
+            </super-navigate>
 
             <button id="refreshButton" class="icon super-refresh" ng-click="update()"></button>
         </div>

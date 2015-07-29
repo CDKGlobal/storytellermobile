@@ -3,6 +3,23 @@ angular
 	// Declare any module-specific AngularJS dependencies here
 	'common'
 ])
+.service('filterService', function() {
+	var filters = [];
+
+	var addHash = function(newHash) {
+		filters.push(newHash);
+	};
+
+	var getHashes = function() {
+		return filters;
+	};
+
+	return {
+		addHash: addHash,
+		getHashes: getHashes
+	};
+
+})
 .controller('MessageController', function($scope, supersonic, $http) {
 	$scope.index = { spinner: false };
 
@@ -21,16 +38,30 @@ angular
 		return promise
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http) {
-	// $scope.results = { hide: true };
+.controller('SearchController', function($scope, supersonic, $http, $window, filterService) {
 	$scope.found = { none: true };
 
 	$scope.checkValid = function(item) {
 		return (angular.isDefined(item) && item != "");	
 	}
 
+	// $scope.setHash = function(newPreset) {
+	// 	console.log("setter called");
+	// 	filterService.addHash(newPreset);
+	// }
+
+	// $scope.getHash = function() {
+	// 	console.log("getter called");
+	// 	return filterService.getHashes();
+	// }
+
 	$scope.search = function() {
 		document.activeElement.blur();
+		
+		// var presetFilters = presetFilterList;
+		console.log($window.handleFilters.getFilters());
+
+
 		var keywords = $scope.search.keywords;
 		var start = $scope.search.startdate;
 		var end = $scope.search.enddate;
@@ -97,6 +128,43 @@ angular
 				supersonic.logger.log("Search error: " + status);
 			});
 		return promise;
+	}
+})
+.controller('SettingsController', function($rootScope, $scope, supersonic, $sce, $compile) {
+
+	$scope.approveFilter = function() {
+		// turn textbox into permanent box...
+		// delete approve button
+		console.log("approved!");
+	}
+
+	$scope.rejectFilter = function() {
+		// delete input, both buttons
+		console.log("rejected");
+	}
+
+	// add filters here, manage the view
+	$scope.addFilter = function() {
+		console.log("added");
+		var fullList = angular.element(document.querySelector('#filters'));
+
+		var newListItem = angular.element('<li></li>');
+
+		var newTextBox = angular.element('<input type="text" />');
+		var approveButton = angular.element('<button></button>');
+		approveButton.attr('class', 'icon super-checkmark-circled');
+		approveButton.attr('ng-click', 'approveFilter()');
+
+		var rejectButton = angular.element('<button></button>');
+		rejectButton.attr('class', 'icon super-close-circled');
+		rejectButton.attr('ng-click', 'rejectFilter()');
+
+		newListItem.append(newTextBox);
+		newListItem.append(approveButton);
+		newListItem.append(rejectButton);
+		fullList.append(newListItem);
+
+		$compile(newListItem)($scope);
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
