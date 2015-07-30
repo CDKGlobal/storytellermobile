@@ -53,9 +53,20 @@ angular
 		return (angular.isDefined(item) && item != "");	
 	}
 
+	// puts array items into x,y,z format for url
+	$scope.URLize = function(arr) {
+		var arrQuery;
+		if($scope.checkValid(arr)) {
+			arrQuery = arr[0];
+			for(var i = 1; i < arr.length; i++) {
+				arrQuery += "," + arr[i];
+			}
+		}
+		return arrQuery;
+	}
+
 	$scope.search = function() {
 		document.activeElement.blur();
-		console.log($window.handleFilters.getFilters());
 
 		var keywords = $scope.search.keywords;
 		var start = $scope.search.startdate;
@@ -63,6 +74,10 @@ angular
 		var contentQuery = "";
 		var startQuery = "";
 		var endQuery = "";
+		var presets = filterService.getHashes();
+		var presetQuery = "";
+
+		presetQuery = URLize(presets);
 
 		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
 		var messageAddOn = "messages?";
@@ -70,14 +85,9 @@ angular
 		var timeAddOn = "time?";
 		var callback = "callback=JSON_CALLBACK";
 
-		console.log(keywords);
-
 		if($scope.checkValid(keywords)) {
 			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-			contentQuery = "query=" + contentParams[0];
-			for(var i = 1; i < contentParams.length; i++) {
-				contentQuery += "," + contentParams[i];
-			}
+			contentQuery = "query=" + $scope.URLize(contentParams);
 			baseUrl += searchAddOn + contentQuery;
 
 			if($scope.checkValid(start)) {
@@ -108,6 +118,7 @@ angular
 		}
 
 		console.log(baseUrl);
+		supersonic.logger.log(baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {
@@ -127,7 +138,7 @@ angular
 })
 .controller('SettingsController', function($scope, supersonic, filterService) {
 
-	$scope.filterList = ['hi', 'hello'];
+	$scope.filterList = [];
 
 	$scope.addFilter = function() {
 		var newFilter = $scope.newInput;
@@ -137,9 +148,6 @@ angular
 			$scope.newInput = "";
 			filterService.addHash(newFilter);
 		}
-
-		console.log("added " + newFilter);
-		console.log(filterService.getHashes());
 	}
 
 	$scope.deleteFilter = function(toDelete) {
@@ -149,7 +157,6 @@ angular
 		}
 		filterService.removeHash(toDelete);
 	}
-	
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
 	$scope.modLink = function(message) {
