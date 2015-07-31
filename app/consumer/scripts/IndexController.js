@@ -33,13 +33,28 @@ angular
 	};
 
 })
-.controller('MessageController', function($scope, supersonic, $http) {
+.constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
+.controller('MessageController', function($scope, supersonic, $http, filterService, urlPrefix) {
 	$scope.index = { spinner: false };
 
 	$scope.update = function () {
 		$scope.index.spinner = false;
 		supersonic.logger.log("updating...");
-		var promise = $http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK")
+
+		var baseUrl = urlPrefix;
+		var presets = filterService.getHashes();
+		var presetQuery = "";
+		if(angular.isDefined(presets) && presets != "") {
+			presetQuery = presets[0];
+			for(var i = 1; i < presets.length; i++) {
+				presetQuery += "," + presets[i];
+			}
+			baseUrl += "search?query=" + presetQuery + "&callback=JSON_CALLBACK";
+		} else {
+			baseUrl += "messages?callback=JSON_CALLBACK";
+		}
+		console.log(baseUrl);
+		var promise = $http.jsonp(baseUrl)
 		.success(function(data, status, headers, config, scope) {
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
@@ -48,10 +63,10 @@ angular
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);
 		});
-		return promise
+		return promise;
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, filterService) {
+.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix) {
 	$scope.found = { none: true };
 
 	$scope.checkValid = function(item) {
@@ -73,7 +88,7 @@ angular
 	$scope.searchAll = function() {
 		document.activeElement.blur();
 
-		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
+		var baseUrl = urlPrefix;
 		var messageAddOn = "messages?";
 		var searchAddOn = "search?";
 		var timeAddOn = "time?";
