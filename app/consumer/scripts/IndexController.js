@@ -5,20 +5,25 @@ angular
 ])
 .service('filterService', function() {
 	var filters = [];
+	localStorage['filters'] = JSON.stringify(filters);
 
 	var addHash = function(newHash) {
-		filters.push(newHash);
+		var temp = JSON.parse(window.localStorage['filters']);
+		temp.push(newHash);
+		window.localStorage['filters'] = JSON.stringify(temp);
 	};
 
 	var removeHash = function(oldHash) {
-		var index = filters.indexOf(oldHash);
+		var temp = JSON.parse(window.localStorage['filters']);
+		var index = temp.indexOf(oldHash);
 		if (index > -1) {
-			filters.splice(index, 1);
+			temp.splice(index, 1);
 		}
+		window.localStorage['filters'] = JSON.stringify(temp);
 	}
 
 	var getHashes = function() {
-		return filters;
+		return JSON.parse(window.localStorage['filters']);
 	};
 
 	return {
@@ -46,7 +51,7 @@ angular
 		return promise
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, $window, filterService) {
+.controller('SearchController', function($scope, supersonic, $http, filterService) {
 	$scope.found = { none: true };
 
 	$scope.checkValid = function(item) {
@@ -55,7 +60,7 @@ angular
 
 	// puts array items into x,y,z format for url
 	$scope.URLize = function(arr) {
-		var arrQuery;
+		var arrQuery = "";
 		if($scope.checkValid(arr)) {
 			arrQuery = arr[0];
 			for(var i = 1; i < arr.length; i++) {
@@ -65,19 +70,8 @@ angular
 		return arrQuery;
 	}
 
-	$scope.search = function() {
+	$scope.searchAll = function() {
 		document.activeElement.blur();
-
-		var keywords = $scope.search.keywords;
-		var start = $scope.search.startdate;
-		var end = $scope.search.enddate;
-		var contentQuery = "";
-		var startQuery = "";
-		var endQuery = "";
-		var presets = filterService.getHashes();
-		var presetQuery = "";
-
-		presetQuery = URLize(presets);
 
 		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
 		var messageAddOn = "messages?";
@@ -85,40 +79,69 @@ angular
 		var timeAddOn = "time?";
 		var callback = "callback=JSON_CALLBACK";
 
-		if($scope.checkValid(keywords)) {
-			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-			contentQuery = "query=" + $scope.URLize(contentParams);
-			baseUrl += searchAddOn + contentQuery;
+		var contentQuery = "";
+		var startQuery = "";
+		var endQuery = "";
+		var presetQuery = "";
 
-			if($scope.checkValid(start)) {
-				startQuery = "&start=" + start;
-				baseUrl += startQuery;
-			}
-			if($scope.checkValid(end)) {
-				endQuery = "&end=" + end;
-				baseUrl += endQuery;
-			}
-			baseUrl += "&" + callback;
-		} else if($scope.checkValid(start) || $scope.checkValid(end)) {
-			baseUrl += timeAddOn;
-			if($scope.checkValid(start)) {
-				startQuery = "start=" + start;
-				baseUrl += startQuery;
+		// check presets first
+		var presets = filterService.getHashes();
+		console.log("official get: " + presets);
+		// if presets are valid, add them to the query
+		if($scope.checkValid(presets)) {
+			presetQuery = $scope.URLize(presets);
+			contentQuery = "query=" + presetQuery;
+		}
+
+		if($scope.checkValid($scope.search)) {
+			var keywords = $scope.search.keywords;
+			var start = $scope.search.startdate;
+			var end = $scope.search.enddate;
+
+			if($scope.checkValid(keywords)) {
+				var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
+				if($scope.checkValid(contentQuery)) {
+					contentQuery += "," + $scope.URLize(contentParams);
+				} else {
+					contentQuery = "query=" + $scope.URLize(contentParams);
+				}
+
+				baseUrl += searchAddOn + contentQuery;
+
+				if($scope.checkValid(start)) {
+					startQuery = "&start=" + start;
+					baseUrl += startQuery;
+				}
 				if($scope.checkValid(end)) {
 					endQuery = "&end=" + end;
 					baseUrl += endQuery;
 				}
-			} else {
-				endQuery = "end=" + end;
-				baseUrl += endQuery;
+				baseUrl += "&" + callback;
+			} else if($scope.checkValid(start) || $scope.checkValid(end)) {
+				baseUrl += timeAddOn;
+				if($scope.checkValid(start)) {
+					startQuery = "start=" + start;
+					baseUrl += startQuery;
+					if($scope.checkValid(end)) {
+						endQuery = "&end=" + end;
+						baseUrl += endQuery;
+					}
+				} else {
+					endQuery = "end=" + end;
+					baseUrl += endQuery;
+				}
+				baseUrl += "&" + callback;
 			}
-			baseUrl += "&" + callback;
+		// no params were put in; still check presets
 		} else {
-			baseUrl += messageAddOn + callback;
+			if($scope.checkValid(contentQuery)) {
+				baseUrl += searchAddOn + contentQuery + "&" + callback;
+			} else {
+				baseUrl += messageAddOn + callback;
+			}
 		}
 
 		console.log(baseUrl);
-		supersonic.logger.log(baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {
@@ -132,6 +155,7 @@ angular
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Search error: " + status);
+				$scope.found.none = false;
 			});
 		return promise;
 	}
@@ -147,6 +171,7 @@ angular
 			$scope.filterList.push(newFilter);
 			$scope.newInput = "";
 			filterService.addHash(newFilter);
+			console.log(filterService.getHashes());
 		}
 	}
 
@@ -156,6 +181,7 @@ angular
 			$scope.filterList.splice(index, 1);
 		}
 		filterService.removeHash(toDelete);
+		console.log(filterService.getHashes());
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
