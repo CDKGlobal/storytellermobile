@@ -5,17 +5,30 @@ angular
 ])
 .service('filterService', function() {
 	var filters = [];
+	localStorage['filters'] = JSON.stringify(filters);
 
 	var addHash = function(newHash) {
-		filters.push(newHash);
+		var temp = JSON.parse(window.localStorage['filters']);
+		temp.push(newHash);
+		window.localStorage['filters'] = JSON.stringify(temp);
 	};
 
+	var removeHash = function(oldHash) {
+		var temp = JSON.parse(window.localStorage['filters']);
+		var index = temp.indexOf(oldHash);
+		if (index > -1) {
+			temp.splice(index, 1);
+		}
+		window.localStorage['filters'] = JSON.stringify(temp);
+	}
+
 	var getHashes = function() {
-		return filters;
+		return JSON.parse(window.localStorage['filters']);
 	};
 
 	return {
 		addHash: addHash,
+		removeHash: removeHash,
 		getHashes: getHashes
 	};
 
@@ -38,36 +51,27 @@ angular
 		return promise
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, $window, filterService) {
+.controller('SearchController', function($scope, supersonic, $http, filterService) {
 	$scope.found = { none: true };
 
 	$scope.checkValid = function(item) {
 		return (angular.isDefined(item) && item != "");	
 	}
 
-	// $scope.setHash = function(newPreset) {
-	// 	console.log("setter called");
-	// 	filterService.addHash(newPreset);
-	// }
+	// puts array items into x,y,z format for url
+	$scope.URLize = function(arr) {
+		var arrQuery = "";
+		if($scope.checkValid(arr)) {
+			arrQuery = arr[0];
+			for(var i = 1; i < arr.length; i++) {
+				arrQuery += "," + arr[i];
+			}
+		}
+		return arrQuery;
+	}
 
-	// $scope.getHash = function() {
-	// 	console.log("getter called");
-	// 	return filterService.getHashes();
-	// }
-
-	$scope.search = function() {
+	$scope.searchAll = function() {
 		document.activeElement.blur();
-		
-		// var presetFilters = presetFilterList;
-		console.log($window.handleFilters.getFilters());
-
-
-		var keywords = $scope.search.keywords;
-		var start = $scope.search.startdate;
-		var end = $scope.search.enddate;
-		var contentQuery = "";
-		var startQuery = "";
-		var endQuery = "";
 
 		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
 		var messageAddOn = "messages?";
@@ -75,41 +79,66 @@ angular
 		var timeAddOn = "time?";
 		var callback = "callback=JSON_CALLBACK";
 
-		console.log(keywords);
+		var contentQuery = "";
+		var startQuery = "";
+		var endQuery = "";
+		var presetQuery = "";
 
-		if($scope.checkValid(keywords)) {
-			var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-			contentQuery = "query=" + contentParams[0];
-			for(var i = 1; i < contentParams.length; i++) {
-				contentQuery += "," + contentParams[i];
-			}
-			baseUrl += searchAddOn + contentQuery;
+		// check presets first
+		var presets = filterService.getHashes();
+		console.log("official get: " + presets);
+		// if presets are valid, add them to the query
+		if($scope.checkValid(presets)) {
+			presetQuery = $scope.URLize(presets);
+			contentQuery = "query=" + presetQuery;
+		}
 
-			if($scope.checkValid(start)) {
-				startQuery = "&start=" + start;
-				baseUrl += startQuery;
-			}
-			if($scope.checkValid(end)) {
-				endQuery = "&end=" + end;
-				baseUrl += endQuery;
-			}
-			baseUrl += "&" + callback;
-		} else if($scope.checkValid(start) || $scope.checkValid(end)) {
-			baseUrl += timeAddOn;
-			if($scope.checkValid(start)) {
-				startQuery = "start=" + start;
-				baseUrl += startQuery;
+		if($scope.checkValid($scope.search)) {
+			var keywords = $scope.search.keywords;
+			var start = $scope.search.startdate;
+			var end = $scope.search.enddate;
+
+			if($scope.checkValid(keywords)) {
+				var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
+				if($scope.checkValid(contentQuery)) {
+					contentQuery += "," + $scope.URLize(contentParams);
+				} else {
+					contentQuery = "query=" + $scope.URLize(contentParams);
+				}
+
+				baseUrl += searchAddOn + contentQuery;
+
+				if($scope.checkValid(start)) {
+					startQuery = "&start=" + start;
+					baseUrl += startQuery;
+				}
 				if($scope.checkValid(end)) {
 					endQuery = "&end=" + end;
 					baseUrl += endQuery;
 				}
-			} else {
-				endQuery = "end=" + end;
-				baseUrl += endQuery;
+				baseUrl += "&" + callback;
+			} else if($scope.checkValid(start) || $scope.checkValid(end)) {
+				baseUrl += timeAddOn;
+				if($scope.checkValid(start)) {
+					startQuery = "start=" + start;
+					baseUrl += startQuery;
+					if($scope.checkValid(end)) {
+						endQuery = "&end=" + end;
+						baseUrl += endQuery;
+					}
+				} else {
+					endQuery = "end=" + end;
+					baseUrl += endQuery;
+				}
+				baseUrl += "&" + callback;
 			}
-			baseUrl += "&" + callback;
+		// no params were put in; still check presets
 		} else {
-			baseUrl += messageAddOn + callback;
+			if($scope.checkValid(contentQuery)) {
+				baseUrl += searchAddOn + contentQuery + "&" + callback;
+			} else {
+				baseUrl += messageAddOn + callback;
+			}
 		}
 
 		console.log(baseUrl);
@@ -126,45 +155,33 @@ angular
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Search error: " + status);
+				$scope.found.none = false;
 			});
 		return promise;
 	}
 })
-.controller('SettingsController', function($rootScope, $scope, supersonic, $sce, $compile) {
+.controller('SettingsController', function($scope, supersonic, filterService) {
 
-	$scope.approveFilter = function() {
-		// turn textbox into permanent box...
-		// delete approve button
-		console.log("approved!");
-	}
+	$scope.filterList = [];
 
-	$scope.rejectFilter = function() {
-		// delete input, both buttons
-		console.log("rejected");
-	}
-
-	// add filters here, manage the view
 	$scope.addFilter = function() {
-		console.log("added");
-		var fullList = angular.element(document.querySelector('#filters'));
+		var newFilter = $scope.newInput;
 
-		var newListItem = angular.element('<li></li>');
+		if(angular.isDefined(newFilter) && newFilter != "") {
+			$scope.filterList.push(newFilter);
+			$scope.newInput = "";
+			filterService.addHash(newFilter);
+			console.log(filterService.getHashes());
+		}
+	}
 
-		var newTextBox = angular.element('<input type="text" />');
-		var approveButton = angular.element('<button></button>');
-		approveButton.attr('class', 'icon super-checkmark-circled');
-		approveButton.attr('ng-click', 'approveFilter()');
-
-		var rejectButton = angular.element('<button></button>');
-		rejectButton.attr('class', 'icon super-close-circled');
-		rejectButton.attr('ng-click', 'rejectFilter()');
-
-		newListItem.append(newTextBox);
-		newListItem.append(approveButton);
-		newListItem.append(rejectButton);
-		fullList.append(newListItem);
-
-		$compile(newListItem)($scope);
+	$scope.deleteFilter = function(toDelete) {
+		var index = $scope.filterList.indexOf(toDelete);
+		if (index > -1) {
+			$scope.filterList.splice(index, 1);
+		}
+		filterService.removeHash(toDelete);
+		console.log(filterService.getHashes());
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
