@@ -67,7 +67,11 @@ angular
 	}
 })
 .controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix) {
+	var count;
+
 	$scope.found = { none: true };
+	$scope.hideMoreButton = true;
+	$scope.noMore = true;
 
 	$scope.checkValid = function(item) {
 		return (angular.isDefined(item) && item != "");	
@@ -85,14 +89,21 @@ angular
 		return arrQuery;
 	}
 
-	$scope.searchAll = function() {
+	$scope.searchAll = function(num) {
+		if (arguments.length === 1) {
+			count = num;
+		} else {
+			count += 15;
+		}
+
 		document.activeElement.blur();
 
 		var baseUrl = urlPrefix;
-		var messageAddOn = "messages?";
+		var recordsAddOn = "records?";
 		var searchAddOn = "search?";
 		var timeAddOn = "time?";
-		var callback = "callback=JSON_CALLBACK";
+		var countAddOn = "count=" + count;
+		var callback = countAddOn + "&" + "callback=JSON_CALLBACK";
 
 		var contentQuery = "";
 		var startQuery = "";
@@ -152,7 +163,7 @@ angular
 			if($scope.checkValid(contentQuery)) {
 				baseUrl += searchAddOn + contentQuery + "&" + callback;
 			} else {
-				baseUrl += messageAddOn + callback;
+				baseUrl += recordsAddOn + callback;
 			}
 		}
 
@@ -163,13 +174,23 @@ angular
 				supersonic.logger.log("Search success! " + status);
 				$scope.allResults = data;
 				if(data == null || data.messages.length === 0) {
+					$scope.hideMoreButton = true;
+					$scope.noMore = true;
 					$scope.found.none = false;
+				} else if (data.messages.length === count) {
+					$scope.hideMoreButton = false;
+					$scope.noMore = true;
+					$scope.found.none = true;
 				} else {
+					$scope.hideMoreButton = true;
+					$scope.noMore = false;
 					$scope.found.none = true;
 				}
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Search error: " + status);
+				$scope.hideMoreButton = true;
+				$scope.noMore = true;
 				$scope.found.none = false;
 			});
 		return promise;

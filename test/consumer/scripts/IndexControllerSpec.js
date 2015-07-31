@@ -72,12 +72,14 @@ describe("SearchController", function() {
 		controller = createController();
 	}));
 
-	it("should initially have no results", function() {
+	it("should initially hide 3 elements", function() {
 		expect(scope.found.none).toBe(true);
+		expect(scope.hideMoreButton).toBe(true);
+		expect(scope.noMore).toBe(true);
 	});
 
 	it("should behave properly when search results are found", function(done) {
-		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK')
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/records?count=15&callback=JSON_CALLBACK')
 			.respond({
 				"messages": [{
 					"userId": "test_userid",
@@ -94,25 +96,61 @@ describe("SearchController", function() {
 					],
 					"message": "this is a message"
 		}]});
-		scope.search()
+		scope.searchAll(15)
 			.then(function() {
 				expect(Object.keys(scope.allResults.messages).length).toBe(2);
 				expect(scope.found.none).toBe(true);
+				expect(scope.hideMoreButton).toBe(true);
+				expect(scope.noMore).toBe(false);
 			}).finally(done);
 		$httpBackend.flush();
 	});
 
+	it("should behave properly when more search results can be found", function(done) {
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/records?count=2&callback=JSON_CALLBACK')
+			.respond({
+				"messages": [{
+					"userId": "test_userid",
+					"timeStamp": "Fri Jul 24 16:14:33 GMT 2015",
+					"hashtags": [
+						"TNUE", "testing", "hello"
+					],
+					"message": "this is a message 1"
+				}, {
+					"userId": "test_userid",
+					"timeStamp": "Fri Jul 24 16:14:33 GMT 2015",
+					"hashtags": [
+						"TNUE", "testing", "hello"
+					],
+					"message": "this is a message 2"
+		}]});
+		scope.searchAll(2)
+			.then(function() {
+				expect(Object.keys(scope.allResults.messages).length).toBe(2);
+				expect(scope.found.none).toBe(true);
+				expect(scope.hideMoreButton).toBe(false);
+				expect(scope.noMore).toBe(true);
+			}).finally(done);
+		$httpBackend.flush();
+	})
+
 	it("should behave properly when search results aren't found", function(done) {
-		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/messages?callback=JSON_CALLBACK')
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/records?count=15&callback=JSON_CALLBACK')
 			.respond({
 				"messages": []
 		});
-		scope.search()
+		scope.searchAll(15)
 			.then(function() {
 				expect(Object.keys(scope.allResults.messages).length).toBe(0);
 				expect(scope.found.none).toBe(false);
+				expect(scope.hideMoreButton).toBe(true);
+				expect(scope.noMore).toBe(true);
 			}).finally(done);
 		$httpBackend.flush();
+	});
+
+	it("", function() {
+
 	});
 });
 
