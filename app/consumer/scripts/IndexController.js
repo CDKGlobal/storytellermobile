@@ -33,14 +33,15 @@ angular
 	};
 
 })
-.controller('MessageController', function($scope, supersonic, $http, filterService) {
+.constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
+.controller('MessageController', function($scope, supersonic, $http, filterService, urlPrefix) {
 	$scope.index = { spinner: false };
 
 	$scope.update = function () {
 		$scope.index.spinner = false;
 		supersonic.logger.log("updating...");
 
-		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
+		var baseUrl = urlPrefix;
 		var presets = filterService.getHashes();
 		var presetQuery = "";
 		if(angular.isDefined(presets) && presets != "") {
@@ -65,7 +66,7 @@ angular
 		return promise;
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, filterService) {
+.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix) {
 	$scope.found = { none: true };
 
 	$scope.checkValid = function(item) {
@@ -87,7 +88,7 @@ angular
 	$scope.searchAll = function() {
 		document.activeElement.blur();
 
-		var baseUrl = "http://fleet.ord.cdk.com/storytellerconsumer/";
+		var baseUrl = urlPrefix;
 		var messageAddOn = "messages?";
 		var searchAddOn = "search?";
 		var timeAddOn = "time?";
