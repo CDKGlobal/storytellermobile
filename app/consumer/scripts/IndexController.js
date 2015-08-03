@@ -288,7 +288,6 @@ angular
 			$scope.hide.sDate = false;
 			$scope.hide.sInput = true;
 			$scope.hide.sButton = true;
-			$scope.startDateInput = "";
 		}
 	}
 
@@ -304,12 +303,11 @@ angular
 
 	$scope.addEndDate = function() {
 		if(validateService.checkValid($scope.endDateInput)) {
-			dateService.addEnd($scope.endDataInput);
+			dateService.addEnd($scope.endDateInput);
 			$scope.dateSet.endDate = $scope.endDateInput;
 			$scope.hide.eDate = false;
 			$scope.hide.eInput = true;
 			$scope.hide.eButton = true;
-			$scope.endDateInput = "";
 		}
 	}
 
@@ -317,7 +315,7 @@ angular
 		if($scope.hide.eDate === false) {
 			dateService.removeEnd();
 			$scope.dateSet.endDate = "";
-			$scope.hide.eData = true;
+			$scope.hide.eDate = true;
 			$scope.hide.eInput = false;
 			$scope.hide.eButton = false;
 		}
