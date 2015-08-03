@@ -15,10 +15,22 @@
 }
 
 .dateInput {
-	margin: 5px 0px;
+	border: 1px solid gray;
+	margin: 5px;
+	display: block;
+	clear: right;
+	overflow: hidden;
 }
 
-.dateInput input {
+.dateInput button {
+	float: left;
+	border: 1px solid green;
+	background-color: transparent;
+	padding: 8px 10px;
+}
+
+.dateInput span {
+	float: left;
 	border-style: solid;
 	border-width: 2px;
 	border-color: lightgray;
