@@ -114,7 +114,7 @@ angular
 		return promise;
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix) {
+.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix, validateService) {
 	var count;
 
 	$scope.found = { none: true };
