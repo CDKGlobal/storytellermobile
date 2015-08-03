@@ -288,13 +288,13 @@ angular
 			$scope.hide.sDate = false;
 			$scope.hide.sInput = true;
 			$scope.hide.sButton = true;
+			$scope.startDateInput = "";
 		}
 	}
 
 	$scope.deleteStartDate = function(toDelete) {
 		if($scope.hide.sDate === false) {
 			dateService.removeStart();
-			$scope.dateSet.startDate = "";
 			$scope.hide.sDate = true;
 			$scope.hide.sInput = false;
 			$scope.hide.sButton = false;
@@ -308,13 +308,13 @@ angular
 			$scope.hide.eDate = false;
 			$scope.hide.eInput = true;
 			$scope.hide.eButton = true;
+			$scope.endDateInput = "";
 		}
 	}
 
 	$scope.deleteEndDate = function() {
 		if($scope.hide.eDate === false) {
 			dateService.removeEnd();
-			$scope.dateSet.endDate = "";
 			$scope.hide.eDate = true;
 			$scope.hide.eInput = false;
 			$scope.hide.eButton = false;
