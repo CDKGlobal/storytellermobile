@@ -149,8 +149,82 @@ describe("SearchController", function() {
 		$httpBackend.flush();
 	});
 
-	it("", function() {
+	it("should use the records? URL if the user fills in no fields", function() {
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/records?count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+	});
 
+	it("should use the search? URL if keywords are given", function() {
+		scope.search = {keywords: "hello"};
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=hello&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+
+		scope.search.startdate = "2015-08-01";
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=hello&start=2015-08-01&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+
+		scope.search.startdate = "";
+		scope.search.enddate = "2015-08-02";
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=hello&end=2015-08-02&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+
+		scope.search.startdate = "2015-08-01";
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=hello&start=2015-08-01&end=2015-08-02&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+	});
+
+	it("should use the time? URL if only dates are given", function() {
+		scope.search = {startdate: "2015-08-01"};
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/time?start=2015-08-01&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+
+		scope.search.startdate = "";
+		scope.search.enddate = "2015-08-02";
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/time?end=2015-08-02&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
+
+		scope.search.startdate = "2015-08-01";
+		expect(scope.checkValid(scope.search)).toBe(true);
+		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/time?start=2015-08-01&end=2015-08-02&count=15&callback=JSON_CALLBACK')
+			.respond({
+				"messages": []
+		});
+		scope.searchAll(15);
+		$httpBackend.flush();
 	});
 });
 
