@@ -31,13 +31,13 @@
         </div>
 
         <div class="padding">
-            <button id="goSearch" ng-click="searchAll()">Go!</button>
+            <button id="goSearch" ng-click="searchAll(15)">Go!</button>
         </div>
     </form>
 
     <div id="allResults" class="padding">
         <ul>
-            <li ng-repeat="result in allResults.messages.slice().reverse()" ng-controller="LinkController" class="result">
+            <li ng-repeat="result in allResults.messages.slice()" ng-controller="LinkController" class="result">
                 <p class="userId">{{result.userId}} </p>
                 <p class="messageBody" ng-bind-html="modLink(result.message)"></p>
                 <p class="subelement">{{result.timeStamp}} </p>
@@ -48,6 +48,14 @@
                 </p>
             </li>
         </ul>
+        <div class="padding">
+            <button id="moreResults" ng-hide="hideMoreButton" ng-click="searchAll()">
+                Get more results
+            </button>
+            <p ng-hide="noMore">
+                No more results available.
+            </p>
+        </div>
     </div>
 
     <div class="padding" ng-hide="found.none">

@@ -98,7 +98,7 @@
 	width: 80%;
 }
 
-#searchButton, #refreshButton, #goSearch {
+#searchButton, #refreshButton, #goSearch, #moreResults, #filterButton {
 	margin: 0;
 	padding: 0 12px;
 	min-width: 52px;
