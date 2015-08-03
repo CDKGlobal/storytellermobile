@@ -22,13 +22,17 @@
     <h3>Default date range</h3>
     <div class="dateInput">
         <label>From:</label>
-        <span><input type="text" placeholder="YYYY-MM-DD" ng-model="startDateInput"></span>
-        <span ng-hide="hide.start">{{dateSet.start}}</span>
+        <span ng-hide="hide.sInput"><input type="text" placeholder="YYYY-MM-DD" ng-model="startDateInput"></span>
+        <span ng-hide="hide.sDate">{{dateSet.startDate}}</span>
+        <button class="icon super-checkmark-circled" ng-click="addStartDate()" ng-hide="hide.sButton"></button>
+        <button class="icon super-close-circled" ng-click="deleteStartDate()"></button>
     </div>
     <div class="dateInput">
         <label>To:</label>
-        <span><input type="text" placeholder="YYYY-MM-DD" ng-model="endDateInput"></span>
-        <span ng-hide="hide.end">{{dateSet.end}}</span>
+        <span ng-hide="hide.eInput"><input type="text" placeholder="YYYY-MM-DD" ng-model="endDateInput"></span>
+        <span ng-hide="hide.eDate">{{dateSet.endDate}}</span>
+        <button class="icon super-checkmark-circled" ng-click="addEndDate()" ng-hide="hide.eButton"></button>
+        <button class="icon super-close-circled" ng-click="deleteEndDate()"></button>
     </div>
 
 </div>

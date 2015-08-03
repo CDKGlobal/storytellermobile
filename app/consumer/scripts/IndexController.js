@@ -5,25 +5,25 @@ angular
 ])
 .service('filterService', function() {
 	var filters = [];
-	localStorage['filters'] = JSON.stringify(filters);
+	localStorage.setItem('filters', JSON.stringify(filters));
 
 	var addHash = function(newHash) {
-		var temp = JSON.parse(window.localStorage['filters']);
+		var temp = JSON.parse(localStorage.getItem('filters'));
 		temp.push(newHash);
-		window.localStorage['filters'] = JSON.stringify(temp);
+		localStorage.setItem('filters', JSON.stringify(temp));
 	};
 
 	var removeHash = function(oldHash) {
-		var temp = JSON.parse(window.localStorage['filters']);
+		var temp = JSON.parse(localStorage.getItem('filters'));
 		var index = temp.indexOf(oldHash);
 		if (index > -1) {
 			temp.splice(index, 1);
 		}
-		window.localStorage['filters'] = JSON.stringify(temp);
-	}
+		localStorage.setItem('filters', JSON.stringify(temp));
+	};
 
 	var getHashes = function() {
-		return JSON.parse(window.localStorage['filters']);
+		return JSON.parse(localStorage.getItem('filters'));
 	};
 
 	return {
@@ -32,6 +32,54 @@ angular
 		getHashes: getHashes
 	};
 
+})
+.service('dateService', function() {
+	var presetStart = "";
+	var presetEnd = "";
+	localStorage.setItem('presetStart', JSON.stringify(presetStart));
+	localStorage.setItem('presetEnd', JSON.stringify(presetEnd));
+
+	var addStart = function(newDate) {
+		presetStart = newDate;
+		localStorage.setItem('presetStart', JSON.stringify(newDate));
+	}
+
+	var removeStart = function() {
+		localStorage.setItem('presetStart', JSON.stringify(""));
+	}
+
+	var addEnd = function(newDate) {
+		presetEnd = newDate;
+		localStorage.setItem('presetEnd', JSON.stringify(newDate));
+	}
+
+	var removeEnd = function() {
+		localStorage.setItem('presetEnd', JSON.stringify(""));
+	}
+
+	var getStart = function() {
+		return JSON.parse(localStorage.getItem('presetStart'));
+	}
+
+	var getEnd = function() {
+		return JSON.parse(localStorage.getItem('presetEnd'));
+	}
+
+	return {
+		addStart: addStart,
+		removeStart: removeStart,
+		addEnd: addEnd,
+		removeEnd: removeEnd,
+		getStart: getStart,
+		getEnd: getEnd
+	};
+})
+.service('validateService', function() {
+	return {
+		checkValid: function(item) {
+			return (angular.isDefined(item) && item != "");	
+		}
+	};
 })
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
 .controller('MessageController', function($scope, supersonic, $http, filterService, urlPrefix) {
@@ -66,21 +114,17 @@ angular
 		return promise;
 	}
 })
-.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix) {
+.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix, validateService) {
 	var count;
 
 	$scope.found = { none: true };
 	$scope.hideMoreButton = true;
 	$scope.noMore = true;
 
-	$scope.checkValid = function(item) {
-		return (angular.isDefined(item) && item != "");	
-	}
-
 	// puts array items into x,y,z format for url
 	$scope.URLize = function(arr) {
 		var arrQuery = "";
-		if($scope.checkValid(arr)) {
+		if(validateService.checkValid(arr)) {
 			arrQuery = arr[0];
 			for(var i = 1; i < arr.length; i++) {
 				arrQuery += "," + arr[i];
@@ -114,19 +158,19 @@ angular
 		var presets = filterService.getHashes();
 		console.log("official get: " + presets);
 		// if presets are valid, add them to the query
-		if($scope.checkValid(presets)) {
+				if(validateService.checkValid(presets)) {
 			presetQuery = $scope.URLize(presets);
 			contentQuery = "query=" + presetQuery;
 		}
 
-		if($scope.checkValid($scope.search)) {
+		if(validateService.checkValid($scope.search)) {
 			var keywords = $scope.search.keywords;
 			var start = $scope.search.startdate;
 			var end = $scope.search.enddate;
 
-			if($scope.checkValid(keywords)) {
+			if(validateService.checkValid(keywords)) {
 				var contentParams = keywords.match(/\w+|"(?:\\"|[^"])+"/g);
-				if($scope.checkValid(contentQuery)) {
+				if(validateService.checkValid(contentQuery)) {
 					contentQuery += "," + $scope.URLize(contentParams);
 				} else {
 					contentQuery = "query=" + $scope.URLize(contentParams);
@@ -134,21 +178,21 @@ angular
 
 				baseUrl += searchAddOn + contentQuery;
 
-				if($scope.checkValid(start)) {
+				if(validateService.checkValid(start)) {
 					startQuery = "&start=" + start;
 					baseUrl += startQuery;
 				}
-				if($scope.checkValid(end)) {
+				if(validateService.checkValid(end)) {
 					endQuery = "&end=" + end;
 					baseUrl += endQuery;
 				}
 				baseUrl += "&" + callback;
-			} else if($scope.checkValid(start) || $scope.checkValid(end)) {
+			} else if(validateService.checkValid(start) || validateService.checkValid(end)) {
 				baseUrl += timeAddOn;
-				if($scope.checkValid(start)) {
+				if(validateService.checkValid(start)) {
 					startQuery = "start=" + start;
 					baseUrl += startQuery;
-					if($scope.checkValid(end)) {
+					if(validateService.checkValid(end)) {
 						endQuery = "&end=" + end;
 						baseUrl += endQuery;
 					}
@@ -157,10 +201,17 @@ angular
 					baseUrl += endQuery;
 				}
 				baseUrl += "&" + callback;
+			} else {
+				// if any search except the first one has no input params
+				if(validateService.checkValid(contentQuery)) {
+					baseUrl += searchAddOn + contentQuery + "&" + callback;
+				} else {
+					baseUrl += recordsAddOn + callback;
+				}
 			}
-		// no params were put in; still check presets
+		// if the very first search has no input params
 		} else {
-			if($scope.checkValid(contentQuery)) {
+			if(validateService.checkValid(contentQuery)) {
 				baseUrl += searchAddOn + contentQuery + "&" + callback;
 			} else {
 				baseUrl += recordsAddOn + callback;
@@ -196,9 +247,18 @@ angular
 		return promise;
 	}
 })
-.controller('SettingsController', function($scope, supersonic, filterService) {
+.controller('SettingsController', function($scope, supersonic, filterService, dateService, validateService) {
+	//initialize all the hides up here...
+	$scope.hide = {sDate: true};
+	$scope.hide = {eDate: true};
+	$scope.hide = {sInput: false};
+	$scope.hide = {eInput: false};
+	$scope.hide = {sButton: false};
+	$scope.hide = {eButton: false};
+	$scope.dateSet = [];
 
-	$scope.filterList = [];
+	// for the view
+	$scope.filterList = filterService.getHashes();
 
 	$scope.addFilter = function() {
 		var newFilter = $scope.newInput;
@@ -218,6 +278,47 @@ angular
 		}
 		filterService.removeHash(toDelete);
 		console.log(filterService.getHashes());
+	}
+
+	$scope.addStartDate = function() {
+		if(validateService.checkValid($scope.startDateInput)) {
+			dateService.addStart($scope.startDateInput);
+			$scope.dateSet.startDate = $scope.startDateInput;
+			// show p, hide input and checkmark
+			$scope.hide.sDate = false;
+			$scope.hide.sInput = true;
+			$scope.hide.sButton = true;
+			$scope.startDateInput = "";
+		}
+	}
+
+	$scope.deleteStartDate = function(toDelete) {
+		if($scope.hide.sDate === false) {
+			dateService.removeStart();
+			$scope.hide.sDate = true;
+			$scope.hide.sInput = false;
+			$scope.hide.sButton = false;
+		}
+	}
+
+	$scope.addEndDate = function() {
+		if(validateService.checkValid($scope.endDateInput)) {
+			dateService.addEnd($scope.endDateInput);
+			$scope.dateSet.endDate = $scope.endDateInput;
+			$scope.hide.eDate = false;
+			$scope.hide.eInput = true;
+			$scope.hide.eButton = true;
+			$scope.endDateInput = "";
+		}
+	}
+
+	$scope.deleteEndDate = function() {
+		if($scope.hide.eDate === false) {
+			dateService.removeEnd();
+			$scope.hide.eDate = true;
+			$scope.hide.eInput = false;
+			$scope.hide.eButton = false;
+		}
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
