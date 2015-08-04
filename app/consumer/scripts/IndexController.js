@@ -1,7 +1,5 @@
 angular.module('consumer', ['common'])
 .service('filterService', function() {
-	var filters = [];
-	localStorage.setItem('filters', JSON.stringify(filters));
 
 	var addHash = function(newHash) {
 		var temp = JSON.parse(localStorage.getItem('filters'));

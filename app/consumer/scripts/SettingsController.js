@@ -33,12 +33,14 @@ angular.module('consumer')
 	}
 
 	$scope.times = [
+		{name: "All time", value: "alltime"},
 		{name: "1 month ago", value: "1mo"},
 		{name: "2 months ago", value: "2mo"},
 		{name: "3 months ago", value: "3mo"},
 		{name: "6 months ago", value: "6mo"},
 		{name: "1 year ago", value: "1yr"},
-		{name: "2 years ago", value: "2yr"},
-		{name: "All time", value: "alltime"}
+		{name: "2 years ago", value: "2yr"}
 	];
+
+	$scope.startDropdown = $scope.times[0];
 });

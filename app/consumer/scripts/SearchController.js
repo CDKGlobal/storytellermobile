@@ -43,7 +43,7 @@ angular.module('consumer')
 		var presets = filterService.getHashes();
 		console.log("official get: " + presets);
 		// if presets are valid, add them to the query
-				if(validateService.checkValid(presets)) {
+		if(validateService.checkValid(presets)) {
 			presetQuery = $scope.URLize(presets);
 			contentQuery = "query=" + presetQuery;
 		}
