@@ -22,17 +22,16 @@
     <h3>Default date range</h3>
     <div class="dateInput">
         <label>From:</label>
-        <span ng-hide="hide.sInput"><input type="text" placeholder="YYYY-MM-DD" ng-model="startDateInput"></span>
-        <span ng-hide="hide.sDate">{{dateSet.startDate}}</span>
-        <button class="icon super-checkmark-circled" ng-click="addStartDate()" ng-hide="hide.sButton"></button>
-        <button class="icon super-close-circled" ng-click="deleteStartDate()"></button>
+        <select ng-model="startDropdown" ng-options="time.name for time in times">
+        </select>
     </div>
-    <div class="dateInput">
-        <label>To:</label>
-        <span ng-hide="hide.eInput"><input type="text" placeholder="YYYY-MM-DD" ng-model="endDateInput"></span>
-        <span ng-hide="hide.eDate">{{dateSet.endDate}}</span>
-        <button class="icon super-checkmark-circled" ng-click="addEndDate()" ng-hide="hide.eButton"></button>
-        <button class="icon super-close-circled" ng-click="deleteEndDate()"></button>
-    </div>
-
+    <li class="item item-toggle">
+        Apply to searches
+        <label class="toggle toggle-assertive">
+            <input type="checkbox">
+            <div class="track">
+                <div class="handle"></div>
+            </div>
+        </label>
+    </li>
 </div>
