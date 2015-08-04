@@ -32,7 +32,6 @@ angular.module('consumer')
 	}
 
 	$scope.modTime = function(oldStamp) {
-		var dateParts = oldStamp.split(" ");
 		var date = new Date(oldStamp);
 		var newStamp = date.toLocaleString();
 		return newStamp;

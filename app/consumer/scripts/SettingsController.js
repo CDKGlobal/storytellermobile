@@ -16,19 +16,16 @@ angular.module('consumer')
 		var newFilter = $scope.newInput;
 
 		if(angular.isDefined(newFilter) && newFilter != "") {
-			$scope.filterList.push(newFilter);
 			$scope.newInput = "";
 			filterService.addHash(newFilter);
+			$scope.filterList = filterService.getHashes();
 			console.log(filterService.getHashes());
 		}
 	}
 
 	$scope.deleteFilter = function(toDelete) {
-		var index = $scope.filterList.indexOf(toDelete);
-		if (index > -1) {
-			$scope.filterList.splice(index, 1);
-		}
 		filterService.removeHash(toDelete);
+		$scope.filterList = filterService.getHashes();
 		console.log(filterService.getHashes());
 	}
 
@@ -37,9 +34,7 @@ angular.module('consumer')
 		{name: "1 month ago", id: "1"},
 		{name: "2 months ago", id: "2"},
 		{name: "3 months ago", id: "3"},
-		{name: "6 months ago", id: "4"},
-		{name: "1 year ago", id: "5"},
-		{name: "2 years ago", id: "6"}
+		{name: "6 months ago", id: "4"}
 	];
 
 	if(validateService.checkValid(dateService.getStart())) {
