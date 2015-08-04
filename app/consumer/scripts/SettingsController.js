@@ -33,14 +33,22 @@ angular.module('consumer')
 	}
 
 	$scope.times = [
-		{name: "All time", value: "alltime"},
-		{name: "1 month ago", value: "1mo"},
-		{name: "2 months ago", value: "2mo"},
-		{name: "3 months ago", value: "3mo"},
-		{name: "6 months ago", value: "6mo"},
-		{name: "1 year ago", value: "1yr"},
-		{name: "2 years ago", value: "2yr"}
+		{name: "All time", id: "0"},
+		{name: "1 month ago", id: "1"},
+		{name: "2 months ago", id: "2"},
+		{name: "3 months ago", id: "3"},
+		{name: "6 months ago", id: "4"},
+		{name: "1 year ago", id: "5"},
+		{name: "2 years ago", id: "6"}
 	];
 
-	$scope.startDropdown = $scope.times[0];
+	if(validateService.checkValid(dateService.getStart())) {
+		$scope.startDropdown = $scope.times[parseInt(dateService.getStart())];
+	} else {
+		$scope.startDropdown = $scope.times[0];
+	}
+	$scope.changedDate = function(item) {
+		console.log(item.id);
+		dateService.setStart(item.name);
+	}
 });

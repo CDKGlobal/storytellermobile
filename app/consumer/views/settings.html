@@ -22,7 +22,7 @@
     <h3>Default date range</h3>
     <div class="dateInput">
         <label>From:</label>
-        <select ng-model="startDropdown" ng-options="time.name for time in times">
+        <select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)">
         </select>
     </div>
     <li class="item item-toggle">
