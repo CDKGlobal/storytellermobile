@@ -3,7 +3,8 @@ angular.module('consumer', ['common'])
 
 	var addHash = function(newHash) {
 		if (localStorage.getItem('filters') === null) {
-			localStorage.setItem('filters', "");
+			var temp = [];
+			localStorage.setItem('filters', JSON.stringify(temp));
 		}
 		var temp = JSON.parse(localStorage.getItem('filters'));
 		if(temp.indexOf(newHash) < 0) {
