@@ -1,12 +1,14 @@
 angular.module('consumer')
 .controller('SettingsController', function($scope, supersonic, filterService, dateService, validateService) {
 	//initialize all the hides up here...
-	$scope.hide = {sDate: true};
-	$scope.hide = {eDate: true};
-	$scope.hide = {sInput: false};
-	$scope.hide = {eInput: false};
-	$scope.hide = {sButton: false};
-	$scope.hide = {eButton: false};
+	$scope.hide = {
+		sDate: true,
+		eDate: true,
+		sInput: false,
+		eInput: false,
+		sButton: false,
+		eButton: false;
+	};
 	$scope.dateSet = [];
 
 	// for the view
