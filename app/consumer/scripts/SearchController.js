@@ -131,4 +131,4 @@ angular.module('consumer')
 			});
 		return promise;
 	}
-})
+});

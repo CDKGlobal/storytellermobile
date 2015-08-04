@@ -31,45 +31,4 @@ angular.module('consumer')
 		filterService.removeHash(toDelete);
 		console.log(filterService.getHashes());
 	}
-
-	// $scope.addStartDate = function() {
-	// 	if(validateService.checkValid($scope.startDateInput)) {
-	// 		dateService.addStart($scope.startDateInput);
-	// 		$scope.dateSet.startDate = $scope.startDateInput;
-	// 		// show p, hide input and checkmark
-	// 		$scope.hide.sDate = false;
-	// 		$scope.hide.sInput = true;
-	// 		$scope.hide.sButton = true;
-	// 		$scope.startDateInput = "";
-	// 	}
-	// }
-
-	// $scope.deleteStartDate = function(toDelete) {
-	// 	if($scope.hide.sDate === false) {
-	// 		dateService.removeStart();
-	// 		$scope.hide.sDate = true;
-	// 		$scope.hide.sInput = false;
-	// 		$scope.hide.sButton = false;
-	// 	}
-	// }
-
-	// $scope.addEndDate = function() {
-	// 	if(validateService.checkValid($scope.endDateInput)) {
-	// 		dateService.addEnd($scope.endDateInput);
-	// 		$scope.dateSet.endDate = $scope.endDateInput;
-	// 		$scope.hide.eDate = false;
-	// 		$scope.hide.eInput = true;
-	// 		$scope.hide.eButton = true;
-	// 		$scope.endDateInput = "";
-	// 	}
-	// }
-
-	// $scope.deleteEndDate = function() {
-	// 	if($scope.hide.eDate === false) {
-	// 		dateService.removeEnd();
-	// 		$scope.hide.eDate = true;
-	// 		$scope.hide.eInput = false;
-	// 		$scope.hide.eButton = false;
-	// 	}
-	// }
-})
+});
