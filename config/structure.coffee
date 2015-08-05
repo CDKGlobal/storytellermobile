@@ -3,22 +3,26 @@
 module.exports =
 
   # See styling options for tabs and other native components in app/common/native-styles/ios.css or app/common/native-styles/android.css
-  tabs: [
-    {
-      title: "Index"
-      id: "index"
-      location: "consumer#index" # Supersonic module#view type navigation
-    }
-    {
-      title: "Settings"
-      id: "settings"
-      location: "consumer#settings"
-    }
-  ]
+  rootView:
+    location: "consumer#index"
+
+  drawers:
+    right:
+      id: "rightDrawer"
+      location: "consumer#drawer"
+      showOnAppLoad: false
 
   preloads: [
     {
+      id: "index"
+      location: "consumer#index"
+    }
+    {
       id: "advanced-search"
       location: "consumer#advanced-search"
+    }
+    {
+      id: "story-stream"
+      location: "consumer#story-stream"
     }
   ]
