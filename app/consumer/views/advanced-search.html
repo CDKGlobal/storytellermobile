@@ -40,7 +40,7 @@
             <li ng-repeat="result in allResults.messages.slice()" ng-controller="LinkController" class="result">
                 <p class="userId">{{result.userId}} </p>
                 <p class="messageBody" ng-bind="modLink(result.message)"></p>
-                <p class="subelement">{{result.timeStamp}} </p>
+                <p class="subelement" ng-bind"modTime(result.timeStamp)"></p>
                 <p class="subelement">
                     <span ng-repeat="filters in result.hashtags" class="hashtag">
                         #{{filters}}
