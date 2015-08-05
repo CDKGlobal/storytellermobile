@@ -9,9 +9,6 @@ angular.module('consumer')
 		sButton: false,
 		eButton: false
 	};
-	$scope.searchChecked = dateService.getChecked();
-	$scope.searchSelect = dateService.getChecked();
-	console.log(dateService.getChecked());
 
 	// for the view
 	$scope.filterList = filterService.getHashes();
@@ -47,12 +44,5 @@ angular.module('consumer')
 
 	$scope.changedDate = function(item) {
 		dateService.setStart(item.name);
-	}
-
-	$scope.selected = function() {
-		// true if toggle is checked
-		var isChecked = $scope.searchSelect;
-		console.log("changed: " + isChecked);
-		dateService.setChecked(isChecked);
 	}
 });

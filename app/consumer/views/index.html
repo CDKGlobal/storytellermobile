@@ -12,47 +12,26 @@
 
 </head>
 
-<body ng-app="SteroidsApplication">
-    <div ng-controller="MessageController" ng-init="update()">
+<body ng-app="SteroidsApplication" ng-controller="FrontController">
+    <div>
         <div>
             <super-navbar>
                 <super-navbar-title>
-                    Consumer Application
+                    CDK Storyteller
                 </super-navbar-title>
+                <super-navbar-button side="right" ng-click="openDrawer()">Settings</super-navbar-button>
             </super-navbar>
         </div>
-
-        <button id="indexNavButton" class="icon-left super-ios-arrow-up" onclick="loadAllButtons.scrollToTop()"></button>
-        <script type="text/javascript">
-            loadAllButtons.loadButton("index");
-        </script>
         
         <div class="buttonBar">
-            <super-navigate view-id="advanced-search">
-                <button id="searchButton" class="icon super-search">  Search</button>
+            <super-navigate view-id="story-stream">
+                <button class="singleStory">
+                    <span>Main Story</span>
+                    <span class="icon super-ios-arrow-forward storyButton"></span>
+                </button>
             </super-navigate>
-
-            <button id="refreshButton" class="icon super-refresh" ng-click="update()"></button>
         </div>
 
-        <div class="loading-box content" ng-hide="index.spinner">
-            <i class="super-loading-c"></i>  Loading...
-        </div>
-
-        <div id="allMessages" class="padding">
-            <ul>
-                <li ng-repeat="msg in allMsg.messages.slice().reverse()" ng-controller="LinkController" class="message">
-                    <p class="userId">{{msg.userId}} </p>
-                    <p class="messageBody" ng-bind="modLink(msg.message)"></p>
-                    <p class="subelement" ng-bind="modTime(msg.timeStamp)"></p>
-                    <p class="subelement">
-                        <span ng-repeat="hashes in msg.hashtags" class="hashtag">
-                            #{{hashes}}
-                        </span>
-                    </p>
-                </li>
-            </ul>
-        </div>
 
     </div>
 </body>
