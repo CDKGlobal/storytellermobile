@@ -7,9 +7,11 @@ angular.module('consumer')
 		sInput: false,
 		eInput: false,
 		sButton: false,
-		eButton: false;
+		eButton: false
 	};
-	$scope.dateSet = [];
+	$scope.searchChecked = dateService.getChecked();
+	$scope.searchSelect = dateService.getChecked();
+	console.log(dateService.getChecked());
 
 	// for the view
 	$scope.filterList = filterService.getHashes();
@@ -21,14 +23,12 @@ angular.module('consumer')
 			$scope.newInput = "";
 			filterService.addHash(newFilter);
 			$scope.filterList = filterService.getHashes();
-			console.log(filterService.getHashes());
 		}
 	}
 
 	$scope.deleteFilter = function(toDelete) {
 		filterService.removeHash(toDelete);
 		$scope.filterList = filterService.getHashes();
-		console.log(filterService.getHashes());
 	}
 
 	$scope.times = [
@@ -44,8 +44,15 @@ angular.module('consumer')
 	} else {
 		$scope.startDropdown = $scope.times[0];
 	}
+
 	$scope.changedDate = function(item) {
-		console.log(item.id);
 		dateService.setStart(item.name);
+	}
+
+	$scope.selected = function() {
+		// true if toggle is checked
+		var isChecked = $scope.searchSelect;
+		console.log("changed: " + isChecked);
+		dateService.setChecked(isChecked);
 	}
 });

@@ -4,6 +4,12 @@
   font-weight: 600;
 }
 
+.applyToSearch {
+	border: 1px solid gray;
+	margin: 5px;
+	color: black;
+}
+
 .buttonBar {
 	border: solid;
 	border-width: 2px;
@@ -20,14 +26,26 @@
 	display: block;
 	clear: right;
 	overflow: hidden;
-	color: gray;
 }
 
 .dateInput label {
 	float: left;
 	margin: 6px;
-	padding-left: 15px;
-	width: 60px;
+	padding-left: 8px;
+	padding-right: 15px; 
+	width: 70px;
+	font-size: 12pt;
+}
+
+.dateInput select {
+	width: 100%;
+	font-size: 12pt;
+}
+
+.dateInput span {
+	display: block;
+	overflow: hidden;
+	margin: 5px;
 }
 
 #filterButton {
@@ -79,6 +97,11 @@
 
 .messageBody {
 	font-size: 12pt !important;
+}
+
+.note {
+	font-size: 10pt;
+	padding-left: 20px;
 }
 
 #refreshButton {

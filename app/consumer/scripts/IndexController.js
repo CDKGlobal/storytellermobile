@@ -47,9 +47,25 @@ angular.module('consumer', ['common'])
 		return localStorage.getItem('presetStart');
 	}
 
+	// should be a boolean
+	var setChecked = function(checked) {
+		localStorage.setItem('checked', JSON.stringify(checked));
+	}
+
+	var getChecked = function() {
+		var tempChecked = JSON.parse(localStorage.getItem('checked'));
+		if(tempChecked == null) {
+			return false;
+		} else {
+			return tempChecked;
+		}
+	}
+
 	return {
 		setStart: setStart,
-		getStart: getStart
+		getStart: getStart,
+		setChecked: setChecked,
+		getChecked: getChecked
 	};
 })
 .service('validateService', function() {

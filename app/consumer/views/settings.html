@@ -22,16 +22,20 @@
     <h3>Default date range</h3>
     <div class="dateInput">
         <label>From:</label>
-        <select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)">
+        <span><select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)"></span>
         </select>
     </div>
-    <li class="item item-toggle">
+    <li class="item item-toggle applyToSearch">
         Apply to searches
-        <label class="toggle toggle-assertive">
-            <input type="checkbox">
+        <label class="toggle toggle-balanced">
+            <input type="checkbox" ng-model="searchSelect" ng-checked="searchChecked" ng-change="selected()">
             <div class="track">
                 <div class="handle"></div>
             </div>
         </label>
     </li>
+    <p class="note">
+        If this is on, then the selected date range will apply to both the front page and any searches.<br/>
+        If this is off, then the date range will only apply to the front page.
+    </p>
 </div>
