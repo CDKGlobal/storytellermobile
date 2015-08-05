@@ -30,4 +30,10 @@ angular.module('consumer')
 		});
 		return promise;
 	}
+
+	$scope.modTime = function(oldStamp) {
+		var date = new Date(oldStamp);
+		var newStamp = date.toLocaleString();
+		return newStamp;
+	}
 });
