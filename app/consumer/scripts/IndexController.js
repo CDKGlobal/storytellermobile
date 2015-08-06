@@ -132,7 +132,7 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
-.controller('DrawerController', function($scope, supersonic, allStoriesService, $rootScope) {
+.controller('DrawerController', function($scope, supersonic, allStoriesService) {
 
 	$scope.deleteAll = function() {
 		allStoriesService.deleteAll();
