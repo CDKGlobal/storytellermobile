@@ -1,6 +1,5 @@
 angular.module('consumer', ['common'])
 .service('allStoriesService', function() {
-
 	var getStories = function() {
 		return JSON.parse(localStorage.getItem('allStories'));
 	};
@@ -11,7 +10,7 @@ angular.module('consumer', ['common'])
 			tempArr = [];
 		}
 		// if newName is valid and not already taken
-		if(newName != null && angular.isDefined(newName) && tempArr.indexOf(newName) < 0) {
+		if(newName != null && angular.isDefined(newName)) {
 			if(newTags == null || angular.isUndefined(newTags)) {
 				newTags = null;
 			} else {
@@ -20,7 +19,6 @@ angular.module('consumer', ['common'])
 			tempArr.push({name: newName, tags: newTags, date: newDate});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
-		console.log("added: " + tempArr);
 	};
 
 	var deleteStory = function(name) {
@@ -32,10 +30,15 @@ angular.module('consumer', ['common'])
 		localStorage.setItem('allStories', JSON.stringify(tempArr));
 	};
 
+	var deleteAll = function() {
+		localStorage.clear();
+	}
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
-		deleteStory: deleteStory
+		deleteStory: deleteStory,
+		deleteAll: deleteAll
 	};
 })
 .service('filterService', function() {
@@ -108,11 +111,6 @@ angular.module('consumer', ['common'])
 .controller('FrontController', function($scope, supersonic, allStoriesService) {
 	$scope.stories = allStoriesService.getStories();
 
-	$scope.openDrawer = function() {
-		supersonic.ui.drawers.open("right");
-	}
-})
-.controller('DrawerController', function($scope, supersonic, allStoriesService) {
 	$scope.story = {
 		createInput: true,
 		createButton: true
@@ -124,18 +122,20 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.approveCreate = function() {
-		console.log("fired");
 		$scope.story.createInput = true;
 		$scope.story.createButton = true;
 		if($scope.newStoryName !== "") {
 			allStoriesService.addStory($scope.newStoryName, $scope.newStoryTags, null);
 			$scope.newStoryName = "";
 			$scope.newStoryTags = "";
+			$scope.stories = allStoriesService.getStories();
 		}
 	}
+})
+.controller('DrawerController', function($scope, supersonic, allStoriesService, $rootScope) {
 
 	$scope.deleteAll = function() {
-		localStorage.clear();
+		allStoriesService.deleteAll();
 	}
 })
 .controller('LinkController', function($scope, supersonic) {

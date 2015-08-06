@@ -8,15 +8,15 @@ module.exports =
 
   preloads: [
     {
-      id: "index"
-      location: "consumer#index"
-    }
-    {
       id: "advanced-search"
       location: "consumer#advanced-search"
     }
     {
       id: "story-stream"
       location: "consumer#story-stream"
+    }
+    {
+      id: "master-settings"
+      location: "consumer#master-settings"
     }
   ]

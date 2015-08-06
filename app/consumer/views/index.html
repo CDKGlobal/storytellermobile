@@ -12,14 +12,14 @@
 
 </head>
 
-<body ng-app="SteroidsApplication" ng-controller="FrontController">
+<body ng-app="SteroidsApplication" ng-controller="FrontController" onfocus="reload()">
     <div>
         <div>
             <super-navbar>
                 <super-navbar-title>
                     CDK Storyteller
                 </super-navbar-title>
-                <super-navbar-button side="right" location="consumer#master-settings">Settings</super-navbar-button>
+                <super-navbar-button side="right" view-id="master-settings">Settings</super-navbar-button>
             </super-navbar>
         </div>
         
@@ -30,6 +30,15 @@
                     <span class="icon super-ios-arrow-forward storyButton"></span>
                 </button>
             </super-navigate>
+        </div>
+
+        <div id="newStory">
+            <button class="drawerButton" ng-click="createStory()">Create New Story</button>
+            <span ng-hide="story.createInput">
+                Name: <input type="text" ng-model="newStoryName">
+                Tags: <input type="text" ng-model="newStoryTags">
+            </span>
+            <button class="drawerButton" ng-hide="story.createButton" ng-click="approveCreate()">Create Story</button>
         </div>
 
 
