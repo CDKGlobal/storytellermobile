@@ -12,24 +12,33 @@
 
 </head>
 
-<body ng-app="SteroidsApplication" ng-controller="FrontController">
+<body ng-app="SteroidsApplication" ng-controller="FrontController" onfocus="reload()">
     <div>
         <div>
             <super-navbar>
                 <super-navbar-title>
                     CDK Storyteller
                 </super-navbar-title>
-                <super-navbar-button side="right" ng-click="openDrawer()">Settings</super-navbar-button>
+                <super-navbar-button side="right" view-id="master-settings">Settings</super-navbar-button>
             </super-navbar>
         </div>
         
         <div class="buttonBar">
             <super-navigate view-id="story-stream">
-                <button class="singleStory">
-                    <span>Main Story</span>
+                <button class="singleStory" ng-repeat="story in stories">
+                    <span>{{story.name}}</span>
                     <span class="icon super-ios-arrow-forward storyButton"></span>
                 </button>
             </super-navigate>
+        </div>
+
+        <div id="newStory">
+            <button class="drawerButton" ng-click="createStory()">Create New Story</button>
+            <span ng-hide="story.createInput">
+                Name: <input type="text" ng-model="newStoryName">
+                Tags: <input type="text" ng-model="newStoryTags">
+            </span>
+            <button class="drawerButton" ng-hide="story.createButton" ng-click="approveCreate()">Create Story</button>
         </div>
 
 

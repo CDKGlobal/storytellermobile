@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix, validateService) {
+.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix, validateService, modTimestamp) {
 	var count;
 
 	$scope.found = { none: true };
@@ -130,5 +130,9 @@ angular.module('consumer')
 				$scope.found.none = false;
 			});
 		return promise;
+	}
+
+	$scope.modTime = function(oldStamp) {
+		return modTimestamp.modTime(oldStamp);
 	}
 });

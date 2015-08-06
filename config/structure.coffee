@@ -6,17 +6,7 @@ module.exports =
   rootView:
     location: "consumer#index"
 
-  drawers:
-    right:
-      id: "rightDrawer"
-      location: "consumer#drawer"
-      showOnAppLoad: false
-
   preloads: [
-    {
-      id: "index"
-      location: "consumer#index"
-    }
     {
       id: "advanced-search"
       location: "consumer#advanced-search"
@@ -24,5 +14,9 @@ module.exports =
     {
       id: "story-stream"
       location: "consumer#story-stream"
+    }
+    {
+      id: "master-settings"
+      location: "consumer#master-settings"
     }
   ]
