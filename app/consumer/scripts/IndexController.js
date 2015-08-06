@@ -132,6 +132,7 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.approveCreate = function() {
+		console.log("fired");
 		$scope.story.createInput = true;
 		$scope.story.createButton = true;
 		if($scope.newStoryName !== "") {

@@ -43,6 +43,7 @@
 .drawerButton {
 	text-align: center;
 	display: block;
+	width: 100%;
 	margin-right: 10px;
 	margin-bottom: 5px;
 	background-color: lightgray;
@@ -131,7 +132,7 @@
 	width: 80%;
 }
 
-#searchButton, #refreshButton, #goSearch, #moreResults, #filterButton {
+#searchButton, #refreshButton, #goSearch, #moreResults, #filterButton, .drawerButton {
 	margin: 0;
 	padding: 0 12px;
 	min-width: 52px;
