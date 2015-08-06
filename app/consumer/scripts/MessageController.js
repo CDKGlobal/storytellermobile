@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, filterService, urlPrefix) {
+.controller('MessageController', function($scope, supersonic, $http, filterService, urlPrefix, modTimestamp) {
 	$scope.index = { spinner: false };
 
 	$scope.update = function () {
@@ -29,6 +29,10 @@ angular.module('consumer')
 			supersonic.logger.log("Error: " + status);
 		});
 		return promise;
+	}
+
+	$scope.modTime = function(oldStamp) {
+		return modTimestamp.modTime(oldStamp);
 	}
 
 });

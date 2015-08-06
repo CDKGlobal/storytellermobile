@@ -25,8 +25,8 @@
         
         <div class="buttonBar">
             <super-navigate view-id="story-stream">
-                <button class="singleStory">
-                    <span>Main Story</span>
+                <button class="singleStory" ng-repeat="story in stories">
+                    <span>{{story.name}}</span>
                     <span class="icon super-ios-arrow-forward storyButton"></span>
                 </button>
             </super-navigate>

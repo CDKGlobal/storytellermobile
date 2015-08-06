@@ -1,7 +1,11 @@
+.appSettings input {
+	width: 100%;
+	border: 1px solid gray;
+	margin: 5px 0px;
+}
+
 .buttonBar {
-	border: solid;
-	border-width: 2px;
-	border-color: white;
+	border: 2px solid white;
 }
 
 .comment {
@@ -37,8 +41,10 @@
 }
 
 .drawerButton {
-	width: 100%;
+	text-align: center;
+	display: block;
 	margin-right: 10px;
+	margin-bottom: 5px;
 	background-color: lightgray;
 	border: 1px solid gray;
 }
@@ -107,6 +113,10 @@
 	font-size: 12pt !important;
 }
 
+#newStory input {
+	padding: 0px 5px;
+}
+
 #refreshButton {
 	float: right;
 	width: 20%;
@@ -164,9 +174,10 @@
 .singleStory {
 	width: 100%;
 	height: 100px;
-	background-color: white;
+	background-color: transparent;
 	border: 2px solid #81be41;
 	border-radius: 5px;
+	margin-bottom: 5px;
 }
 
 .storyButton {
