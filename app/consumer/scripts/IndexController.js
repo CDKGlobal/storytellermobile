@@ -1,10 +1,5 @@
 angular.module('consumer', ['common'])
 .service('allStoriesService', function() {
-	// var allStories = {stories: [
-	//     {name: "Snatch", tags: ["hello", "hey"], date: "3 months ago"},
-	//     {name: "Snatch", tags: ["hello"], date: "3 months ago"},
-	//     {name: "Snatch", tags: [], date: null}
-	// ]};
 
 	var getStories = function() {
 		return JSON.parse(localStorage.getItem('allStories'));
@@ -29,9 +24,12 @@ angular.module('consumer', ['common'])
 	};
 
 	var deleteStory = function(name) {
-		// get item
-		// delete
-		// put it back
+		var tempArr = JSON.parse(localStorage.getItem('allStories'));
+		var index = tempArr.indexOf(name);
+		if (index > -1) {
+			temp.splice(index, 1);
+		}
+		localStorage.setItem('allStories', JSON.stringify(tempArr));
 	};
 
 	return {
@@ -113,12 +111,6 @@ angular.module('consumer', ['common'])
 	$scope.openDrawer = function() {
 		supersonic.ui.drawers.open("right");
 	}
-
- //    $scope.$watch(function () { return localStorage.getItem('allStories'); }, function(newVal, oldVal) {
- //    	if(angular.isUndefined(newVal) || newVal.length !== oldVal.length) {
- //    		console.log("new: " + newVal);
- //    	}
-	// });
 })
 .controller('DrawerController', function($scope, supersonic, allStoriesService) {
 	$scope.story = {
