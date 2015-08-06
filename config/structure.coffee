@@ -6,12 +6,6 @@ module.exports =
   rootView:
     location: "consumer#index"
 
-  drawers:
-    right:
-      id: "rightDrawer"
-      location: "consumer#drawer"
-      showOnAppLoad: false
-
   preloads: [
     {
       id: "index"
