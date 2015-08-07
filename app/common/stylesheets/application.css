@@ -5,7 +5,7 @@
 }
 
 .buttonBar {
-	border: 2px solid white;
+	border: 2px solid transparent;
 }
 
 .comment {
@@ -102,6 +102,25 @@
     padding-top: 10px;
 }
 
+#mainPage {
+	width: 100%;
+	height: 100%;
+}
+
+#mainPage::after {
+	content: "";
+	background-image: url(http://www.clker.com/cliparts/8/B/3/d/S/I/ireland-md.png);
+	background-repeat: no-repeat;
+	position: fixed;
+	opacity: 0.5;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-size: 100%;
+	z-index: -1;
+}
+
 .message, .result {
 	border-bottom: solid;
 	border-width: 2px;
@@ -116,6 +135,10 @@
 
 #newStory input {
 	padding: 0px 5px;
+	background-color: transparent;
+	border: 2px solid #81be41;
+	border-radius: 5px;
+	margin-bottom: 5px;
 }
 
 #refreshButton {
@@ -139,7 +162,7 @@
 	min-height: 47px;
 	border-width: 1px;
 	border-style: solid;
-	border-color: white;
+	border-color: transparent;
 	border-radius: 2px;
 	vertical-align: top;
 	text-align: center;
