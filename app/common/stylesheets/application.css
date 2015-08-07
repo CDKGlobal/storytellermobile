@@ -20,11 +20,11 @@
 	overflow: hidden;
 }
 
-.dateInput label {
+.dateInput label, .drawerButton label {
 	float: left;
 	margin: 6px;
 	padding-left: 8px;
-	padding-right: 15px; 
+	padding-right: 15px;
 	width: 70px;
 	font-size: 12pt;
 }
@@ -123,7 +123,7 @@
 	width: 20%;
 }
 
-#refreshButton:active, #searchButton:active, #goSearch:active, .delete#active {
+#refreshButton:active, #searchButton:active, #goSearch:active, .delete:active, .drawerButton:active {
 	background-color: darkgray;
 }
 

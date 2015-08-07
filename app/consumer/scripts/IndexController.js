@@ -32,6 +32,8 @@ angular.module('consumer', ['common'])
 
 	var deleteAll = function() {
 		localStorage.clear();
+		var temp = [];
+		localStorage.setItem('allStories', JSON.stringify(temp));
 	}
 
 	return {
@@ -108,13 +110,19 @@ angular.module('consumer', ['common'])
 	}
 })
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
-.controller('FrontController', function($scope, supersonic, allStoriesService) {
+.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout) {
 	$scope.stories = allStoriesService.getStories();
 
 	$scope.story = {
 		createInput: true,
 		createButton: true
 	};
+
+	supersonic.ui.views.current.whenVisible( function () {
+		$timeout(function() {
+			$scope.stories = allStoriesService.getStories();
+		});
+	});
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;
