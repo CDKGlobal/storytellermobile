@@ -14,8 +14,7 @@ angular.module('consumer', ['common'])
 			if(newTags == null || angular.isUndefined(newTags)) {
 				newTags = null;
 			} else {
-				// TODO: change this
-				newTags = newTags.split(", ");
+				newTags = newTags.split(/[\s,]+/);
 			}
 			tempArr.push({name: newName, tags: newTags, date: newDate});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));

@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SettingsController', function($scope, supersonic, validateService, allStoriesService, $timeout, $location) {
+.controller('SettingsController', function($scope, supersonic, validateService, allStoriesService, $timeout) {
 	//initialize all the hides up here...
 	$scope.hide = {
 		sDate: true,
@@ -23,6 +23,7 @@ angular.module('consumer')
 		// timeout required to update
 		$timeout(function() {
 			$scope.filterList = allStoriesService.getHashes(storyName);
+			console.log(allStoriesService.getHashes(storyName));
 			if(allStoriesService.getDate(storyName) != null) {
 				$scope.startDropdown = $scope.times[parseInt(allStoriesService.getDate(storyName))];
 			} else {
@@ -37,6 +38,7 @@ angular.module('consumer')
 			$scope.newInput = "";
 			allStoriesService.addHash(storyName, newFilter);
 			$scope.filterList = allStoriesService.getHashes(storyName);
+			console.log(allStoriesService.getHashes(storyName));
 		}
 	}
 
