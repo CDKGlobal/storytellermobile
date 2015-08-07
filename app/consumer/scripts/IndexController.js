@@ -119,8 +119,6 @@ angular.module('consumer', ['common'])
 	};
 
 	supersonic.ui.views.current.whenVisible( function () {
-		console.log("VISIBLE");
-		console.log(allStoriesService.getStories());
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
 		});
