@@ -16,8 +16,9 @@
             </li>
         </ul>
         <input type="text" id="filterInput" ng-model="newInput"/>
-        <input type="button" value="Add filter" id="filterButton" ng-click="addFilter()"/>
+        <button id="filterButton" ng-click="addFilter()">Add filter</button>
     </div>
+    <p class="note">Note: these apply to the stream and subsequent searches.</p>
 
     <h3>Default date range</h3>
     <div class="dateInput">
@@ -25,4 +26,8 @@
         <span><select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)"></span>
         </select>
     </div>
+    <p class="note">Note: this only applies to the stream.</p>
+
+    <br />
+    <button class="deleteStory" ng-click="deleteStory()">Delete this story</button>
 </div>

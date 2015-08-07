@@ -1,9 +1,8 @@
 <div ng-controller="MessageController" ng-init="update()">
     <super-navbar>
-         <super-navbar-title>
-            CDK Storyteller
+         <super-navbar-title ng-bind="storyTitle">
         </super-navbar-title>
-        <super-navbar-button side="right" location="consumer#settings">Story Settings</super-navbar-button>
+        <super-navbar-button side="right" view-id="settings">Story Settings</super-navbar-button>
     </super-navbar>
 
     <button id="indexNavButton" class="icon-left super-ios-arrow-up" onclick="loadAllButtons.scrollToTop()"></button>
@@ -23,7 +22,7 @@
         <i class="super-loading-c"></i>  Loading...
     </div>
 
-    <div id="allMessages" class="padding">
+    <div id="allMessages" class="padding" ng-hide="stories.hide">
         <ul>
             <li ng-repeat="msg in allMsg.messages.slice().reverse()" ng-controller="LinkController" class="message">
                 <p class="userId">{{msg.userId}} </p>
