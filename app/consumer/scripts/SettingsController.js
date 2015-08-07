@@ -23,7 +23,6 @@ angular.module('consumer')
 		// timeout required to update
 		$timeout(function() {
 			$scope.filterList = allStoriesService.getHashes(storyName);
-			console.log(allStoriesService.getHashes(storyName));
 			if(allStoriesService.getDate(storyName) != null) {
 				$scope.startDropdown = $scope.times[parseInt(allStoriesService.getDate(storyName))];
 			} else {
@@ -38,7 +37,6 @@ angular.module('consumer')
 			$scope.newInput = "";
 			allStoriesService.addHash(storyName, newFilter);
 			$scope.filterList = allStoriesService.getHashes(storyName);
-			console.log(allStoriesService.getHashes(storyName));
 		}
 	}
 
@@ -49,11 +47,11 @@ angular.module('consumer')
 
 	$scope.changedDate = function(item) {
 		allStoriesService.setDate(storyName, item.id);
-		console.log(allStoriesService.getDate(storyName));
 	}
 
 	$scope.deleteStory = function() {
-		// allStoriesService.deleteStory(storyName);
+		allStoriesService.deleteStory(storyName);
+		supersonic.ui.layers.popAll();
 		// $location.path('/index');
 		// grab the current name...
 		// remove it from localStorage

@@ -1,6 +1,7 @@
 angular.module('consumer')
 .controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService) {
 	$scope.index = { spinner: false };
+	$scope.stories = { hide: true };
 
 	supersonic.data.channel('story-name').subscribe(function(message) {
 		console.log("received a message " + message);
@@ -18,6 +19,7 @@ angular.module('consumer')
 
 	$scope.update = function () {
 		$scope.index.spinner = false;
+		$scope.stories.hide = true;
 		supersonic.logger.log("updating...");
 
 		var baseUrl = urlPrefix;
@@ -38,6 +40,7 @@ angular.module('consumer')
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
 			$scope.index.spinner = true;
+			$scope.stories.hide = false;
 		})
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);

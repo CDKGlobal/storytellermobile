@@ -21,11 +21,12 @@ angular.module('consumer', ['common'])
 		}
 	};
 
-	var deleteStory = function(name) {
+	var deleteStory = function(storyName) {
 		var tempArr = JSON.parse(localStorage.getItem('allStories'));
-		var index = tempArr.indexOf(name);
-		if (index > -1) {
-			temp.splice(index, 1);
+		for(var i = 0; i < tempArr.length; i++) {
+			if(tempArr[i].name === storyName) {
+				tempArr.splice(i, 1);
+			}
 		}
 		localStorage.setItem('allStories', JSON.stringify(tempArr));
 	};

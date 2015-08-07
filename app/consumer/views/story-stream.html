@@ -22,7 +22,7 @@
         <i class="super-loading-c"></i>  Loading...
     </div>
 
-    <div id="allMessages" class="padding">
+    <div id="allMessages" class="padding" ng-hide="stories.hide">
         <ul>
             <li ng-repeat="msg in allMsg.messages.slice().reverse()" ng-controller="LinkController" class="message">
                 <p class="userId">{{msg.userId}} </p>
