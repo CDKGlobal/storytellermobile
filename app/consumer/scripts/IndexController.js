@@ -14,6 +14,7 @@ angular.module('consumer', ['common'])
 			if(newTags == null || angular.isUndefined(newTags)) {
 				newTags = null;
 			} else {
+				// TODO: change this
 				newTags = newTags.split(", ");
 			}
 			tempArr.push({name: newName, tags: newTags, date: newDate});
@@ -36,61 +37,79 @@ angular.module('consumer', ['common'])
 		localStorage.setItem('allStories', JSON.stringify(temp));
 	}
 
+	// finds filters based on input name
+	var getHashes = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				return storiesCopy[i].tags;
+			}
+		}
+		var none = [];
+		return none;
+	};
+
+	var getDate = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				return storiesCopy[i].date;
+			}
+		}
+		var none = [];
+		return none;
+	};
+
+	var addHash = function(storyName, newFilter) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				var temp = storiesCopy[i].tags;
+				if(temp == null) {
+					temp = [];
+				}
+				temp.push(newFilter);
+				storiesCopy[i].tags = temp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	};
+
+	var deleteHash = function(storyName, oldHash) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				var temp = storiesCopy[i].tags;
+				var index = temp.indexOf(oldHash);
+				if (index > -1) {
+					temp.splice(index, 1);
+				}
+				storiesCopy[i].tags = temp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	};
+
+	var setDate = function(storyName, newRange) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].date = newRange;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));		
+	};
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
 		deleteStory: deleteStory,
-		deleteAll: deleteAll
-	};
-})
-.service('filterService', function() {
-	var addHash = function(newHash) {
-		if (localStorage.getItem('filters') === null) {
-			var temp = [];
-			localStorage.setItem('filters', JSON.stringify(temp));
-		}
-		var temp = JSON.parse(localStorage.getItem('filters'));
-		if(temp.indexOf(newHash) < 0) {
-			temp.push(newHash);
-			localStorage.setItem('filters', JSON.stringify(temp));
-		}
-	};
-
-	var removeHash = function(oldHash) {
-		var temp = JSON.parse(localStorage.getItem('filters'));
-		var index = temp.indexOf(oldHash);
-		if (index > -1) {
-			temp.splice(index, 1);
-		}
-		localStorage.setItem('filters', JSON.stringify(temp));
-	};
-
-	var getHashes = function() {
-		if (localStorage.getItem('filters') === null) {
-			var temp = [];
-			localStorage.setItem('filters', JSON.stringify(temp));
-		}
-		return JSON.parse(localStorage.getItem('filters'));
-	};
-
-	return {
+		deleteAll: deleteAll,
+		getHashes: getHashes,
+		getDate: getDate,
 		addHash: addHash,
-		removeHash: removeHash,
-		getHashes: getHashes
-	};
-})
-.service('dateService', function() {
-	var setStart = function(newRange) {
-		localStorage.setItem('presetStart', newRange);
-	}
-
-	var getStart = function() {
-		return localStorage.getItem('presetStart');
-	}
-
-	return {
-		setStart: setStart,
-		getStart: getStart
+		deleteHash: deleteHash,
+		setDate: setDate
 	};
 })
 .service('validateService', function() {
@@ -138,6 +157,11 @@ angular.module('consumer', ['common'])
 			$scope.newStoryTags = "";
 			$scope.stories = allStoriesService.getStories();
 		}
+	}
+
+	$scope.publishInfo = function(storyName) {
+		console.log("publish...");
+		supersonic.data.channel('story-name').publish(storyName);
 	}
 })
 .controller('DrawerController', function($scope, supersonic, allStoriesService) {

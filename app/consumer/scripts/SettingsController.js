@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SettingsController', function($scope, supersonic, filterService, dateService, validateService) {
+.controller('SettingsController', function($scope, supersonic, validateService, allStoriesService, $timeout, $location) {
 	//initialize all the hides up here...
 	$scope.hide = {
 		sDate: true,
@@ -9,25 +9,6 @@ angular.module('consumer')
 		sButton: false,
 		eButton: false
 	};
-
-	// for the view
-	$scope.filterList = filterService.getHashes();
-
-	$scope.addFilter = function() {
-		var newFilter = $scope.newInput;
-
-		if(angular.isDefined(newFilter) && newFilter != "") {
-			$scope.newInput = "";
-			filterService.addHash(newFilter);
-			$scope.filterList = filterService.getHashes();
-		}
-	}
-
-	$scope.deleteFilter = function(toDelete) {
-		filterService.removeHash(toDelete);
-		$scope.filterList = filterService.getHashes();
-	}
-
 	$scope.times = [
 		{name: "All time", id: "0"},
 		{name: "1 month ago", id: "1"},
@@ -35,14 +16,45 @@ angular.module('consumer')
 		{name: "3 months ago", id: "3"},
 		{name: "6 months ago", id: "4"}
 	];
+	var storyName = "";
 
-	if(validateService.checkValid(dateService.getStart())) {
-		$scope.startDropdown = $scope.times[parseInt(dateService.getStart())];
-	} else {
-		$scope.startDropdown = $scope.times[0];
+	supersonic.data.channel('story-name').subscribe(function(message) {
+		storyName = message;
+		// timeout required to update
+		$timeout(function() {
+			$scope.filterList = allStoriesService.getHashes(storyName);
+			if(allStoriesService.getDate(storyName) != null) {
+				$scope.startDropdown = $scope.times[parseInt(allStoriesService.getDate(storyName))];
+			} else {
+				$scope.startDropdown = $scope.times[0];
+			}
+		});
+	});
+
+	$scope.addFilter = function() {
+		var newFilter = $scope.newInput;
+		if(angular.isDefined(newFilter) && newFilter != "") {
+			$scope.newInput = "";
+			allStoriesService.addHash(storyName, newFilter);
+			$scope.filterList = allStoriesService.getHashes(storyName);
+		}
+	}
+
+	$scope.deleteFilter = function(toDelete) {
+		allStoriesService.deleteHash(storyName, toDelete);
+		$scope.filterList = allStoriesService.getHashes(storyName);
 	}
 
 	$scope.changedDate = function(item) {
-		dateService.setStart(item.name);
+		allStoriesService.setDate(storyName, item.id);
+		console.log(allStoriesService.getDate(storyName));
+	}
+
+	$scope.deleteStory = function() {
+		// allStoriesService.deleteStory(storyName);
+		// $location.path('/index');
+		// grab the current name...
+		// remove it from localStorage
+		// return to front view
 	}
 });

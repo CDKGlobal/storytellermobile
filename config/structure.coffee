@@ -19,4 +19,8 @@ module.exports =
       id: "master-settings"
       location: "consumer#master-settings"
     }
+    {
+      id:"settings"
+      location: "consumer#settings"
+    }
   ]

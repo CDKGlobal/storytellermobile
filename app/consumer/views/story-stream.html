@@ -1,9 +1,8 @@
 <div ng-controller="MessageController" ng-init="update()">
     <super-navbar>
-         <super-navbar-title>
-            CDK Storyteller
+         <super-navbar-title ng-bind="storyTitle">
         </super-navbar-title>
-        <super-navbar-button side="right" location="consumer#settings">Story Settings</super-navbar-button>
+        <super-navbar-button side="right" view-id="settings">Story Settings</super-navbar-button>
     </super-navbar>
 
     <button id="indexNavButton" class="icon-left super-ios-arrow-up" onclick="loadAllButtons.scrollToTop()"></button>

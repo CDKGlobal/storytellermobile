@@ -1,7 +1,11 @@
 angular.module('consumer')
-.controller('SearchController', function($scope, supersonic, $http, filterService, urlPrefix, validateService, modTimestamp) {
+.controller('SearchController', function($scope, supersonic, $http, urlPrefix, validateService, modTimestamp, allStoriesService) {
 	var count;
+	var storyName = "";
 
+	supersonic.data.channel('story-name').subscribe(function(message) {
+		storyName = message;
+	});
 	$scope.found = { none: true };
 	$scope.hideMoreButton = true;
 	$scope.noMore = true;
@@ -40,7 +44,7 @@ angular.module('consumer')
 		var presetQuery = "";
 
 		// check presets first
-		var presets = filterService.getHashes();
+		var presets = allStoriesService.getHashes(storyName);
 		console.log("official get: " + presets);
 		// if presets are valid, add them to the query
 		if(validateService.checkValid(presets)) {
