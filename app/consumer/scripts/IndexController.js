@@ -182,13 +182,17 @@ angular.module('consumer', ['common'])
 	$scope.dealerNameSearchTerm = [];
 
 	var hold = " ";
+	var protocol = window.location.protocol;
+	var base_url = "fleet.ord.cdk.com";
+	var type = "storytellerconsumer";
 
     $scope.filterTagsBySearchTerm = function () {
     	supersonic.logger.log("Info enter..");
     	var newest = $scope.search.keywords;
 
     	if (hold !== newest) {
-			$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/approximate?query=" + newest + "*&callback=JSON_CALLBACK")
+    		var request = protocol + "//" + base_url + "/" + type + "/approximate?query=" + newest;
+			$http.jsonp(request + "*&callback=JSON_CALLBACK")
 				.success(function(data, status, headers, config, scope) {
 					$scope.dealerNameSearchTerm = data.messages;
 					supersonic.logger.log("Autocomplete http Success! " + status);
