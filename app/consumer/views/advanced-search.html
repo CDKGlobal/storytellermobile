@@ -15,14 +15,13 @@
 
     <form>
         <p class="comment">Searches message content and hashtags</p>
-        <p class="comment">We can give you hashtags that you may want</p>
+        <p class="comment">We can give you related hashtags</p>
         <div class="searchItem" ng-controller="AutocompleteController">  
             <label>Keywords:</label>
             
-            <!-- <span><input type="text" ng-model="search.keywords"></span> -->
             <span><input type="text" ng-keyup="filterTagsBySearchTerm()" autocorrect="off" autocapitalize="off" placeholder="type anything to search" ng-model="search.keywords"></span>
 
-            <h6>Here's are the possible hashtags that you may be interested in<h6>
+            <h6>Recommend hashtags: <h6>
             <div>
                 <div ng-repeat="x in dealerNameSearchTerm">
                     <div>
