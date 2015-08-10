@@ -12,6 +12,7 @@
     </script>
 
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
+    <h4>We can give you hashtags that you may want.</h4>
 
     <form>
         <div class="searchItem" ng-controller="AutocompleteController">  
@@ -25,7 +26,7 @@
             <div>
                 <div ng-repeat="x in dealerNameSearchTerm">
                     <div>
-                        <span>{{ x.hashtags }} </span>
+                        <span>{{ x.hashTag }} </span>
                     </div>
                 </div>
             </div>

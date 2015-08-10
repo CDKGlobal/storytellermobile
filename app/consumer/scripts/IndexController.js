@@ -188,7 +188,7 @@ angular.module('consumer', ['common'])
     	var newest = $scope.search.keywords;
 
     	if (hold !== newest) {
-			$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + newest + "*&callback=JSON_CALLBACK")
+			$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/approximate?query=" + newest + "*&callback=JSON_CALLBACK")
 				.success(function(data, status, headers, config, scope) {
 					$scope.dealerNameSearchTerm = data.messages;
 					supersonic.logger.log("Autocomplete http Success! " + status);
