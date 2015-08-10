@@ -1,7 +1,7 @@
 angular.module('consumer')
 .controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService) {
-	$scope.index = { spinner: false };
-	$scope.stories = { hide: true };
+	$scope.index = {spinner: false};
+	$scope.stories = {hide: true};
 
 	supersonic.data.channel('story-name').subscribe(function(message) {
 		console.log("received a message " + message);
@@ -11,15 +11,19 @@ angular.module('consumer')
 		$scope.update();
 	});
 
-	supersonic.ui.views.current.whenVisible( function () {
+	supersonic.ui.views.current.whenVisible(function() {
+		$scope.stories.hide = true;
 		$timeout(function() {
 			$scope.update();
 		});
 	});
 
+	supersonic.ui.views.current.whenHidden(function() {
+		$scope.stories.hide = true;
+	});
+
 	$scope.update = function () {
 		$scope.index.spinner = false;
-		$scope.stories.hide = true;
 		supersonic.logger.log("updating...");
 
 		var baseUrl = urlPrefix;
