@@ -12,17 +12,17 @@
     </script>
 
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
-    <h4>We can give you hashtags that you may want.</h4>
 
     <form>
+        <p class="comment">Searches message content and hashtags</p>
+        <p class="comment">We can give you hashtags that you may want</p>
         <div class="searchItem" ng-controller="AutocompleteController">  
             <label>Keywords:</label>
             
             <!-- <span><input type="text" ng-model="search.keywords"></span> -->
             <span><input type="text" ng-keyup="filterTagsBySearchTerm()" autocorrect="off" autocapitalize="off" placeholder="type anything to search" ng-model="search.keywords"></span>
 
-            {{search.keywords}}
-            Here's are the name showing up.
+            <h6>Here's are the possible hashtags that you may be interested in<h6>
             <div>
                 <div ng-repeat="x in dealerNameSearchTerm">
                     <div>
@@ -31,7 +31,6 @@
                 </div>
             </div>
 
-            <p class="comment">Searches message content and hashtags</p>
         </div>
 
         <h4>Date Range</h4>
