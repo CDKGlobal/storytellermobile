@@ -14,9 +14,22 @@
     <h4>Specify the message content, hashtag(s), and/or user ID for your search.</h4>
 
     <form>
-        <div class="searchItem">  
+        <div class="searchItem" ng-controller="AutocompleteController">  
             <label>Keywords:</label>
-            <span><input type="text" ng-model="search.keywords"></span>
+            
+            <!-- <span><input type="text" ng-model="search.keywords"></span> -->
+            <span><input type="text" ng-keyup="filterTagsBySearchTerm()" autocorrect="off" autocapitalize="off" placeholder="type anything to search" ng-model="search.keywords"></span>
+
+            {{search.keywords}}
+            Here's are the name showing up.
+            <div>
+                <div ng-repeat="x in dealerNameSearchTerm">
+                    <div>
+                        <span>{{ x.hashtags }} </span>
+                    </div>
+                </div>
+            </div>
+
             <p class="comment">Searches message content and hashtags</p>
         </div>
 

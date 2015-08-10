@@ -153,4 +153,28 @@ angular.module('consumer', ['common'])
 		var modified = message.replace(regex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
 		return modified;
 	}
+})
+.controller('AutocompleteController', function ($scope, $http, supersonic) {
+	$scope.dealerNameSearchTerm = [];
+
+	var hold = " ";
+
+    $scope.filterTagsBySearchTerm = function () {
+    	supersonic.logger.log("Info enter..");
+    	var newest = $scope.search.keywords;
+
+    	if (hold !== newest) {
+			$http.jsonp("http://fleet.ord.cdk.com/storytellerconsumer/search?query=" + newest + "*&callback=JSON_CALLBACK")
+				.success(function(data, status, headers, config, scope) {
+					$scope.dealerNameSearchTerm = data.messages;
+					supersonic.logger.log("Autocomplete http Success! " + status);
+				})
+				.error(function(data, status, headers, config) {
+					supersonic.logger.log("Autocomplete http Failure! " + status);
+				});
+			hold = newest;
+    	}
+
+    	
+    };
 });
