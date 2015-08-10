@@ -52,9 +52,5 @@ angular.module('consumer')
 	$scope.deleteStory = function() {
 		allStoriesService.deleteStory(storyName);
 		supersonic.ui.layers.popAll();
-		// $location.path('/index');
-		// grab the current name...
-		// remove it from localStorage
-		// return to front view
 	}
 });
