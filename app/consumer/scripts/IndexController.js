@@ -1,5 +1,15 @@
 angular.module('consumer', ['common'])
 .service('allStoriesService', function() {
+	var findStory = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				return storiesCopy[i];
+			}
+		}
+		return [];
+	}
+
 	var getStories = function() {
 		return JSON.parse(localStorage.getItem('allStories'));
 	};
@@ -39,25 +49,13 @@ angular.module('consumer', ['common'])
 
 	// finds filters based on input name
 	var getHashes = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].tags;
-			}
-		}
-		var none = [];
-		return none;
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.tags;
 	};
 
 	var getDate = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].date;
-			}
-		}
-		var none = [];
-		return none;
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.date;
 	};
 
 	var addHash = function(storyName, newFilter) {
@@ -101,13 +99,8 @@ angular.module('consumer', ['common'])
 	};
 
 	var getLatestStamp = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].latestStamp;
-			}
-		}
-		return "";
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.latestStamp;
 	};
 
 	var setLatestStamp = function(storyName, newStamp) {
@@ -131,13 +124,8 @@ angular.module('consumer', ['common'])
 	}
 
 	var getNotifications = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].notifications;
-			}
-		}
-		return "2015-01-01 12:00:00 AM";
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.notifications;
 	}
 
 	return {
