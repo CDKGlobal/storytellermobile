@@ -16,7 +16,7 @@ angular.module('consumer', ['common'])
 			} else {
 				newTags = newTags.split(/[\s,]+/);
 			}
-			tempArr.push({name: newName, tags: newTags, date: newDate});
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestStamp: "", notifications: 0});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
@@ -100,6 +100,46 @@ angular.module('consumer', ['common'])
 		localStorage.setItem('allStories', JSON.stringify(storiesCopy));		
 	};
 
+	var getLatestStamp = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				return storiesCopy[i].latestStamp;
+			}
+		}
+		return "";
+	};
+
+	var setLatestStamp = function(storyName, newStamp) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].latestStamp = newStamp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	};
+
+	var setNotifications = function(storyName, newNum) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].notifications = newNum;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	}
+
+	var getNotifications = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				return storiesCopy[i].notifications;
+			}
+		}
+		return "2015-01-01 12:00:00 AM";
+	}
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
@@ -109,13 +149,17 @@ angular.module('consumer', ['common'])
 		getDate: getDate,
 		addHash: addHash,
 		deleteHash: deleteHash,
-		setDate: setDate
+		setDate: setDate,
+		getLatestStamp: getLatestStamp,
+		setLatestStamp: setLatestStamp,
+		getNotifications: getNotifications,
+		setNotifications: setNotifications
 	};
 })
 .service('validateService', function() {
 	return {
 		checkValid: function(item) {
-			return (angular.isDefined(item) && item != "");	
+			return (angular.isDefined(item) && item != "" && item != null);	
 		}
 	};
 })
@@ -128,8 +172,68 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
+.service('basicStoryURL', function(urlPrefix, validateService, dateService, presetTimes) {
+	return {
+		getURL: function(hashtags, date) {
+			var tempURL = urlPrefix;
+			if(!validateService.checkValid(hashtags) && !validateService.checkValid(date)) {
+				// no presets stored; this is the same as calling /messages, but in the right order
+				return tempURL + "records?count=50&callback=JSON_CALLBACK";
+			} else if(validateService.checkValid(hashtags)) {
+				// hashes are preset
+				var tagQuery = hashtags[0];
+				for(var i = 1; i < hashtags.length; i++) {
+					tagQuery += "," + hashtags[i];
+				}
+				if(!validateService.checkValid(date)) {
+					// date is also set
+					// *****CHAGE*****
+					startQuery = dateService.subtractMonths(date, presetTimes[date]);
+					console.log(startQuery);
+					return tempURL + "search?query=" + tagQuery + "&start=" + startQuery + "&callback=JSON_CALLBACK";
+				} else {
+					return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
+				}
+			} else {
+				// only date is set
+				startQuery = dateService.subtractMonths(date, presetTimes[date]);
+				console.log(startQuery);
+				return tempURL + "time?start=" + startQuery + "&callback=JSON_CALLBACK";
+			}
+		}
+	}
+})
+.service('dateService', function() {
+	return {
+		subtractMonths: function(currentStamp, dropValue) {
+			var toSubtract = 0;
+			//current timestamp is in the form 8/10/2015 2:54:46 PM
+			switch(dropValue) {
+				case "1 month ago":
+					toSubtract = 1;
+				case "2 months ago":
+					toSubtract = 2;
+				case "3 months ago":
+					toSubtract = 3;
+				case "6 months ago":
+					toSubtract = 6;
+			}
+
+			var current = new Date(currentStamp);
+			current.setMonth(current.getMonth() - toSubtract);
+			return (current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate());
+		}
+	}
+})
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
-.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout) {
+.constant('presetTimes', [
+	{name: "All time", id: "0"},
+	{name: "1 month ago", id: "1"},
+	{name: "2 months ago", id: "2"},
+	{name: "3 months ago", id: "3"},
+	{name: "6 months ago", id: "4"}
+])
+.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, $http, basicStoryURL, validateService) {
 	$scope.stories = allStoriesService.getStories();
 
 	$scope.story = {
@@ -142,6 +246,41 @@ angular.module('consumer', ['common'])
 			$scope.stories = allStoriesService.getStories();
 		});
 	});
+
+	$scope.updateNotifications = function() {
+		var storiesCopy = allStoriesService.getStories();
+		angular.forEach(storiesCopy, function(story) {
+			var storyURL = basicStoryURL.getURL(story.tags, story.date);
+			$http.jsonp(storyURL)
+			.success(function(data, status, headers, config, scope) {
+				supersonic.logger.log("Success! " + status);
+				// if stored timestamp is different from the first message in returned api call
+				if(validateService.checkValid(data.messages)) {
+					console.log("valid messages");
+					// count new messages, using timestamp
+					var newMsgCount = 0;
+					var savedStamp = allStoriesService.getLatestStamp(story.name);
+					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
+						newMsgCount++;
+					}
+					// update notification field
+					allStoriesService.setNotifications(story.name, newMsgCount);
+					console.log(newMsgCount);
+				}
+			})
+			.error(function(data, status, headers, config) {
+				supersonic.logger.log("Error: " + status + " " + storyURL);
+			});
+		})
+		$timeout(function() {
+			$scope.stories = allStoriesService.getStories();
+		});
+	}
+
+	$scope.updateNotifications();
+	$interval(function() {
+		$scope.updateNotifications();
+	}, 5000);
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;
