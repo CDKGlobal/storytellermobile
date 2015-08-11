@@ -12,7 +12,6 @@ angular.module('consumer')
 	$scope.noMore = true;
 
 	supersonic.ui.views.current.whenVisible(function() {
-		supersonic.logger.log("data being cleared");
 		$scope.found.none = true;
 		$scope.hideMoreButton = true;
 		$scope.noMore = true;
