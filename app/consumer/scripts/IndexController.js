@@ -1,13 +1,8 @@
 angular.module('consumer', ['common'])
-.service('allStoriesService', function() {
+.service('allStoriesService', function($filter) {
 	var findStory = function(storyName) {
 		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i];
-			}
-		}
-		return [];
+		return $filter('filter')(storiesCopy, { name: storyName })[0];
 	}
 
 	var getStories = function() {
