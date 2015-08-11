@@ -21,7 +21,8 @@ angular.module('consumer', ['common'])
 			} else {
 				newTags = newTags.split(/[\s,]+/);
 			}
-			tempArr.push({name: newName, tags: newTags, date: newDate, latestStamp: "", notifications: 0});
+			var newStamp = new Date();
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestStamp: newStamp, notifications: 0});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
