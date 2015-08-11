@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService) {
+.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService) {
 	var count;
 
 	$scope.index = {spinner: false};
@@ -53,7 +53,7 @@ angular.module('consumer')
 		console.log(baseUrl);
 		var promise = $http.jsonp(baseUrl)
 		.success(function(data, status, headers, config, scope) {
-			supersonic.logger.log("Success! " + status);
+			supersonic.logger.log("Success! updating " + status);
 			$scope.allMsg = data;
 			if(data == null || data.messages.length === 0) {
 					$scope.hideMoreButton = true;
@@ -68,7 +68,7 @@ angular.module('consumer')
 			$scope.index.spinner = true;
 			$scope.stories.hide = false;
 			if(validateService.checkValid(data)) {
-				allStoriesService.setLatestStamp(storyName, $scope.modTime(data.messages[data.messages.length - 1].timeStamp));
+				allStoriesService.setLatestStamp(storyName, $scope.modTime(data.messages[0].timeStamp));
 			}
 		})
 		.error(function(data, status, headers, config) {
