@@ -205,21 +205,19 @@ angular.module('consumer', ['common'])
 .service('dateService', function() {
 	return {
 		subtractMonths: function(dateObj) {
-			console.log("input: " + dateObj);
-			var dropVal = parseInt(dateObj);
-			console.log(dropVal);
-			var toSubtractd;
-			switch(dropVal) {
-				case 0:
-					toSubtract = 0;
-				case 1:
-					toSubtract = 1;
-				case 2:
-					toSubtract = 2;
-				case 3:
-					toSubtract = 3;
-				case 4:
-					toSubtract = 6;
+			var toSubtract;
+			if(dateObj == 0) {
+				toSubtract = 0;
+			} else if(dateObj == 1) {
+				toSubtract = 1;
+			} else if(dateObj == 2) {
+				toSubtract = 2;
+			} else if(dateObj == 3) {
+				toSubtract = 3;
+			} else if(dateObj == 4) {
+				toSubtract = 6;
+			} else {
+				toSubtract = 0;
 			}
 
 			var current = new Date();
