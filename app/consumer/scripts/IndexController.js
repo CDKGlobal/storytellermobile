@@ -1,5 +1,10 @@
 angular.module('consumer', ['common'])
-.service('allStoriesService', function() {
+.service('allStoriesService', function($filter) {
+	var findStory = function(storyName) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		return $filter('filter')(storiesCopy, { name: storyName })[0];
+	}
+
 	var getStories = function() {
 		return JSON.parse(localStorage.getItem('allStories'));
 	};
@@ -16,7 +21,8 @@ angular.module('consumer', ['common'])
 			} else {
 				newTags = newTags.split(/[\s,]+/);
 			}
-			tempArr.push({name: newName, tags: newTags, date: newDate});
+			var newStamp = new Date();
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestStamp: newStamp, notifications: 0});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
@@ -39,25 +45,13 @@ angular.module('consumer', ['common'])
 
 	// finds filters based on input name
 	var getHashes = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].tags;
-			}
-		}
-		var none = [];
-		return none;
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.tags;
 	};
 
 	var getDate = function(storyName) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				return storiesCopy[i].date;
-			}
-		}
-		var none = [];
-		return none;
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.date;
 	};
 
 	var addHash = function(storyName, newFilter) {
@@ -100,6 +94,36 @@ angular.module('consumer', ['common'])
 		localStorage.setItem('allStories', JSON.stringify(storiesCopy));		
 	};
 
+	var getLatestStamp = function(storyName) {
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.latestStamp;
+	};
+
+	var setLatestStamp = function(storyName, newStamp) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].latestStamp = newStamp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	};
+
+	var setNotifications = function(storyName, newNum) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].notifications = newNum;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	}
+
+	var getNotifications = function(storyName) {
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.notifications;
+	}
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
@@ -109,13 +133,17 @@ angular.module('consumer', ['common'])
 		getDate: getDate,
 		addHash: addHash,
 		deleteHash: deleteHash,
-		setDate: setDate
+		setDate: setDate,
+		getLatestStamp: getLatestStamp,
+		setLatestStamp: setLatestStamp,
+		getNotifications: getNotifications,
+		setNotifications: setNotifications
 	};
 })
 .service('validateService', function() {
 	return {
 		checkValid: function(item) {
-			return (angular.isDefined(item) && item != "");	
+			return (angular.isDefined(item) && item != "" && item != null);	
 		}
 	};
 })
@@ -128,8 +156,74 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
+.service('basicStoryURL', function(urlPrefix, validateService, dateService) {
+	return {
+		getURL: function(hashtags, date) {
+			var tempURL = urlPrefix;
+			if(!validateService.checkValid(hashtags) && (!validateService.checkValid(date) || date == 0)) {
+				// no presets stored; this is the same as calling /messages, but in the right order
+				return tempURL + "records?count=50&callback=JSON_CALLBACK";
+			} else if(validateService.checkValid(hashtags)) {
+				// hashes are preset
+				var tagQuery = hashtags[0];
+				for(var i = 1; i < hashtags.length; i++) {
+					tagQuery += "," + hashtags[i];
+				}
+				if(!validateService.checkValid(date) || date == 0) {
+					// date is also set
+					startQuery = dateService.subtractMonths(date);
+					console.log(startQuery);
+					return tempURL + "search?query=" + tagQuery + "&start=" + startQuery + "&callback=JSON_CALLBACK";
+				} else {
+					return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
+				}
+			} else {
+				// only date is set
+				startQuery = dateService.subtractMonths(date);
+				console.log(startQuery);
+				return tempURL + "time?start=" + startQuery + "&callback=JSON_CALLBACK";
+			}
+		}
+	}
+})
+.service('dateService', function() {
+	return {
+		subtractMonths: function(dateObj) {
+			var toSubtract;
+			if(dateObj == 0) {
+				toSubtract = 0;
+			} else if(dateObj == 1) {
+				toSubtract = 1;
+			} else if(dateObj == 2) {
+				toSubtract = 2;
+			} else if(dateObj == 3) {
+				toSubtract = 3;
+			} else if(dateObj == 4) {
+				toSubtract = 6;
+			} else {
+				toSubtract = 0;
+			}
+
+			var current = new Date();
+			if(toSubtract === 0) {
+				return '2015-01-01';
+			} else {
+				console.log(toSubtract);
+				current.setMonth(current.getMonth() - toSubtract);
+				return (current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate());
+			}
+		}
+	}
+})
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
-.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout) {
+.constant('presetTimes', [
+	{name: "All time", id: "0"},
+	{name: "1 month ago", id: "1"},
+	{name: "2 months ago", id: "2"},
+	{name: "3 months ago", id: "3"},
+	{name: "6 months ago", id: "4"}
+])
+.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, $http, basicStoryURL, validateService) {
 	$scope.stories = allStoriesService.getStories();
 
 	$scope.story = {
@@ -139,9 +233,43 @@ angular.module('consumer', ['common'])
 
 	supersonic.ui.views.current.whenVisible( function () {
 		$timeout(function() {
-			$scope.stories = allStoriesService.getStories();
+			$scope.updateNotifications();
 		});
 	});
+
+	$scope.updateNotifications = function() {
+		var storiesCopy = allStoriesService.getStories();
+		angular.forEach(storiesCopy, function(story) {
+			// pass in array of hashes, date as a number
+			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
+			$http.jsonp(storyURL)
+			.success(function(data, status, headers, config, scope) {
+				supersonic.logger.log("Success! " + status);
+				// if stored timestamp is different from the first message in returned api call
+				if(validateService.checkValid(data.messages)) {
+					// count new messages, using timestamp
+					var newMsgCount = 0;
+					var savedStamp = allStoriesService.getLatestStamp(story.name);
+					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
+						newMsgCount++;
+					}
+					// update notification field
+					allStoriesService.setNotifications(story.name, newMsgCount);
+				}
+			})
+			.error(function(data, status, headers, config) {
+				supersonic.logger.log("Error: " + status + " " + storyURL);
+			});
+		})
+		$timeout(function() {
+			$scope.stories = allStoriesService.getStories();
+		});
+	}
+
+	$scope.updateNotifications();
+	$interval(function() {
+		$scope.updateNotifications();
+	}, 3000);
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;

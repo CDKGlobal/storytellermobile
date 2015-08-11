@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SettingsController', function($scope, supersonic, validateService, allStoriesService, $timeout) {
+.controller('SettingsController', function($scope, supersonic, validateService, allStoriesService, $timeout, presetTimes) {
 	//initialize all the hides up here...
 	$scope.hide = {
 		sDate: true,
@@ -9,13 +9,7 @@ angular.module('consumer')
 		sButton: false,
 		eButton: false
 	};
-	$scope.times = [
-		{name: "All time", id: "0"},
-		{name: "1 month ago", id: "1"},
-		{name: "2 months ago", id: "2"},
-		{name: "3 months ago", id: "3"},
-		{name: "6 months ago", id: "4"}
-	];
+	$scope.times = presetTimes;
 	var storyName = "";
 
 	supersonic.data.channel('story-name').subscribe(function(message) {

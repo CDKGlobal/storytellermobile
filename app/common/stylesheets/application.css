@@ -149,6 +149,11 @@
 	margin: 5px;
 }
 
+.notifButton {
+	float: left;
+	margin: 0px 10px;
+}
+
 #refreshButton {
 	float: right;
 	width: 20%;

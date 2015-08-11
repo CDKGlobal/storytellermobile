@@ -1,13 +1,13 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService) {
+.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService) {
 	$scope.index = {spinner: false};
 	$scope.stories = {hide: true};
+	var storyName;
 
 	supersonic.data.channel('story-name').subscribe(function(message) {
 		console.log("received a message " + message);
 		$scope.storyTitle = message;
-		// var currentFilters = $scope.findFilters(message);
-		// hashes, dates should be set up...below
+		storyName = message;
 		$scope.update();
 	});
 
@@ -45,6 +45,9 @@ angular.module('consumer')
 			$scope.allMsg = data;
 			$scope.index.spinner = true;
 			$scope.stories.hide = false;
+			if(validateService.checkValid(data)) {
+				allStoriesService.setLatestStamp(storyName, $scope.modTime(data.messages[data.messages.length - 1].timeStamp));
+			}
 		})
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);
