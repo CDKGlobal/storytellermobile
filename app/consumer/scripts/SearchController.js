@@ -46,8 +46,9 @@ angular.module('consumer')
 		// check presets first
 		var presets = allStoriesService.getHashes(storyName);
 		console.log("official get: " + presets);
+		supersonic.logger.log("official get: " + presets);
 		// if presets are valid, add them to the query
-		if(validateService.checkValid(presets)) {
+		if(presets != null && validateService.checkValid(presets)) {
 			presetQuery = $scope.URLize(presets);
 			contentQuery = "query=" + presetQuery;
 		}
@@ -108,6 +109,7 @@ angular.module('consumer')
 		}
 
 		console.log(baseUrl);
+		supersonic.logger.log(baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {
