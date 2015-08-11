@@ -172,11 +172,11 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
-.service('basicStoryURL', function(urlPrefix, validateService, dateService, presetTimes) {
+.service('basicStoryURL', function(urlPrefix, validateService, dateService) {
 	return {
 		getURL: function(hashtags, date) {
 			var tempURL = urlPrefix;
-			if(!validateService.checkValid(hashtags) && !validateService.checkValid(date)) {
+			if(!validateService.checkValid(hashtags) && (!validateService.checkValid(date) || date == 0)) {
 				// no presets stored; this is the same as calling /messages, but in the right order
 				return tempURL + "records?count=50&callback=JSON_CALLBACK";
 			} else if(validateService.checkValid(hashtags)) {
@@ -185,10 +185,9 @@ angular.module('consumer', ['common'])
 				for(var i = 1; i < hashtags.length; i++) {
 					tagQuery += "," + hashtags[i];
 				}
-				if(!validateService.checkValid(date)) {
+				if(!validateService.checkValid(date) || date == 0) {
 					// date is also set
-					// *****CHAGE*****
-					startQuery = dateService.subtractMonths(date, presetTimes[date]);
+					startQuery = dateService.subtractMonths(date);
 					console.log(startQuery);
 					return tempURL + "search?query=" + tagQuery + "&start=" + startQuery + "&callback=JSON_CALLBACK";
 				} else {
@@ -196,7 +195,7 @@ angular.module('consumer', ['common'])
 				}
 			} else {
 				// only date is set
-				startQuery = dateService.subtractMonths(date, presetTimes[date]);
+				startQuery = dateService.subtractMonths(date);
 				console.log(startQuery);
 				return tempURL + "time?start=" + startQuery + "&callback=JSON_CALLBACK";
 			}
@@ -205,23 +204,32 @@ angular.module('consumer', ['common'])
 })
 .service('dateService', function() {
 	return {
-		subtractMonths: function(currentStamp, dropValue) {
-			var toSubtract = 0;
-			//current timestamp is in the form 8/10/2015 2:54:46 PM
-			switch(dropValue) {
-				case "1 month ago":
+		subtractMonths: function(dateObj) {
+			console.log("input: " + dateObj);
+			var dropVal = parseInt(dateObj);
+			console.log(dropVal);
+			var toSubtractd;
+			switch(dropVal) {
+				case 0:
+					toSubtract = 0;
+				case 1:
 					toSubtract = 1;
-				case "2 months ago":
+				case 2:
 					toSubtract = 2;
-				case "3 months ago":
+				case 3:
 					toSubtract = 3;
-				case "6 months ago":
+				case 4:
 					toSubtract = 6;
 			}
 
-			var current = new Date(currentStamp);
-			current.setMonth(current.getMonth() - toSubtract);
-			return (current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate());
+			var current = new Date();
+			if(toSubtract === 0) {
+				return '2015-01-01';
+			} else {
+				console.log(toSubtract);
+				current.setMonth(current.getMonth() - toSubtract);
+				return (current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate());
+			}
 		}
 	}
 })
@@ -243,14 +251,15 @@ angular.module('consumer', ['common'])
 
 	supersonic.ui.views.current.whenVisible( function () {
 		$timeout(function() {
-			$scope.stories = allStoriesService.getStories();
+			$scope.updateNotifications();
 		});
 	});
 
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
 		angular.forEach(storiesCopy, function(story) {
-			var storyURL = basicStoryURL.getURL(story.tags, story.date);
+			// pass in array of hashes, date as a number
+			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Success! " + status);
@@ -278,7 +287,7 @@ angular.module('consumer', ['common'])
 	$scope.updateNotifications();
 	$interval(function() {
 		$scope.updateNotifications();
-	}, 5000);
+	}, 3000);
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;
