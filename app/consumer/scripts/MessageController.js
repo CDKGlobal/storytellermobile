@@ -8,8 +8,6 @@ angular.module('consumer')
 		console.log("received a message " + message);
 		$scope.storyTitle = message;
 		storyName = message;
-		// var currentFilters = $scope.findFilters(message);
-		// hashes, dates should be set up...below
 		$scope.update();
 	});
 

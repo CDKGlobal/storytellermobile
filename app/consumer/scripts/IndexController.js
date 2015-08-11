@@ -256,7 +256,6 @@ angular.module('consumer', ['common'])
 				supersonic.logger.log("Success! " + status);
 				// if stored timestamp is different from the first message in returned api call
 				if(validateService.checkValid(data.messages)) {
-					console.log("valid messages");
 					// count new messages, using timestamp
 					var newMsgCount = 0;
 					var savedStamp = allStoriesService.getLatestStamp(story.name);
@@ -265,7 +264,6 @@ angular.module('consumer', ['common'])
 					}
 					// update notification field
 					allStoriesService.setNotifications(story.name, newMsgCount);
-					console.log(newMsgCount);
 				}
 			})
 			.error(function(data, status, headers, config) {
