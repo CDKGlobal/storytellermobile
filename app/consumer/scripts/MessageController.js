@@ -1,20 +1,25 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService) {
+.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService) {
+	var count;
+
 	$scope.index = {spinner: false};
 	$scope.stories = {hide: true};
+	$scope.hideMoreButton = true;
+	$scope.noMore = true;
 	var storyName;
 
 	supersonic.data.channel('story-name').subscribe(function(message) {
 		console.log("received a message " + message);
 		$scope.storyTitle = message;
+
 		storyName = message;
-		$scope.update();
+		$scope.update(15);
 	});
 
 	supersonic.ui.views.current.whenVisible(function() {
 		$scope.stories.hide = true;
 		$timeout(function() {
-			$scope.update();
+			$scope.update(15);
 		});
 	});
 
@@ -22,7 +27,14 @@ angular.module('consumer')
 		$scope.stories.hide = true;
 	});
 
-	$scope.update = function () {
+	$scope.update = function (num) {
+		if (arguments.length === 1) {
+			count = num;
+		} else {
+			supersonic.logger.log("adding fifteen");
+			count += 15;
+		}
+
 		$scope.index.spinner = false;
 		supersonic.logger.log("updating...");
 
@@ -34,15 +46,25 @@ angular.module('consumer')
 			for(var i = 1; i < presets.length; i++) {
 				presetQuery += "," + presets[i];
 			}
-			baseUrl += "search?query=" + presetQuery + "&callback=JSON_CALLBACK";
+			baseUrl += "search?query=" + presetQuery + "&count=" + count + "&callback=JSON_CALLBACK";
 		} else {
-			baseUrl += "messages?callback=JSON_CALLBACK";
+			baseUrl += "records?count=" + count + "&callback=JSON_CALLBACK";
 		}
 		console.log(baseUrl);
 		var promise = $http.jsonp(baseUrl)
 		.success(function(data, status, headers, config, scope) {
 			supersonic.logger.log("Success! " + status);
 			$scope.allMsg = data;
+			if(data == null || data.messages.length === 0) {
+					$scope.hideMoreButton = true;
+					$scope.noMore = true;
+				} else if (data.messages.length === count) {
+					$scope.hideMoreButton = false;
+					$scope.noMore = true;
+				} else {
+					$scope.hideMoreButton = true;
+					$scope.noMore = false;
+				}
 			$scope.index.spinner = true;
 			$scope.stories.hide = false;
 			if(validateService.checkValid(data)) {
@@ -52,6 +74,7 @@ angular.module('consumer')
 		.error(function(data, status, headers, config) {
 			supersonic.logger.log("Error: " + status);
 		});
+
 		return promise;
 	}
 

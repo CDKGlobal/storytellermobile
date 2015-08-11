@@ -6,9 +6,20 @@ angular.module('consumer')
 	supersonic.data.channel('story-name').subscribe(function(message) {
 		storyName = message;
 	});
+
 	$scope.found = { none: true };
 	$scope.hideMoreButton = true;
 	$scope.noMore = true;
+
+	supersonic.ui.views.current.whenVisible(function() {
+		$scope.found.none = true;
+		$scope.hideMoreButton = true;
+		$scope.noMore = true;
+		$scope.allResults = null;
+		$scope.search.keywords = "";
+		$scope.search.startdate = "";
+		$scope.search.enddate = "";
+	});
 
 	// puts array items into x,y,z format for url
 	$scope.URLize = function(arr) {
@@ -47,7 +58,7 @@ angular.module('consumer')
 		var presets = allStoriesService.getHashes(storyName);
 		console.log("official get: " + presets);
 		// if presets are valid, add them to the query
-		if(validateService.checkValid(presets)) {
+		if(presets != null && validateService.checkValid(presets)) {
 			presetQuery = $scope.URLize(presets);
 			contentQuery = "query=" + presetQuery;
 		}
@@ -108,6 +119,7 @@ angular.module('consumer')
 		}
 
 		console.log(baseUrl);
+		supersonic.logger.log(baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {

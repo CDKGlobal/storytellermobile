@@ -1,4 +1,4 @@
-<div ng-controller="MessageController" ng-init="update()">
+<div ng-controller="MessageController" ng-init="update(15)">
     <super-navbar>
          <super-navbar-title ng-bind="storyTitle">
         </super-navbar-title>
@@ -15,16 +15,16 @@
             <button id="searchButton" class="icon super-search">  Search</button>
         </super-navigate>
 
-        <button id="refreshButton" class="icon super-refresh" ng-click="update()"></button>
+        <button id="refreshButton" class="icon super-refresh" ng-click="update(15)"></button>
     </div>
-
+ 
     <div class="loading-box content" ng-hide="index.spinner">
         <i class="super-loading-c"></i>  Loading...
     </div>
 
     <div id="allMessages" class="padding" ng-hide="stories.hide">
         <ul>
-            <li ng-repeat="msg in allMsg.messages.slice().reverse()" ng-controller="LinkController" class="message">
+            <li ng-repeat="msg in allMsg.messages.slice()" ng-controller="LinkController" class="message">
                 <p class="userId">{{msg.userId}} </p>
                 <p class="messageBody" ng-bind="modLink(msg.message)"></p>
                 <p class="subelement" ng-bind="modTime(msg.timeStamp)"></p>
@@ -35,6 +35,14 @@
                 </p>
             </li>
         </ul>
+        <div class="padding">
+            <button id="moreResults" ng-hide="hideMoreButton" ng-click="update()">
+                Get more results
+            </button>
+            <p ng-hide="noMore">
+                No more results available.
+            </p>
+        </div>
     </div>
 
 </div>
