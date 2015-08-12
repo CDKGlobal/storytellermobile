@@ -8,6 +8,11 @@
 	border: 2px solid transparent;
 }
 
+.centerButton {
+	text-align: center;
+	margin: 5px 0px;
+}
+
 .comment {
 	padding-left: 85px;
 }
@@ -41,9 +46,10 @@
 }
 
 .drawerButton {
-	margin: 0;
+	margin-left: auto;
+	margin-right: auto;
 	padding: 0 12px;
-	width: 100%;
+	/*width: 40%;*/
 	min-height: 47px;
 	border-width: 1px;
 	border-style: solid;
@@ -224,6 +230,10 @@
 	margin: 0px 10px;
 }
 
+#storyInput {
+	display: block;
+}
+
 #storyInput input {
 	width: 95%;
 	border: 2px solid #81be41;
@@ -233,6 +243,7 @@
 
 #storyInput label {
 	float: left;
+	clear: left;
 	margin: 10px;
 	width: 50px;
 }

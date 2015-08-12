@@ -156,13 +156,13 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
-.service('basicStoryURL', function(urlPrefix, validateService, dateService) {
+.service('basicStoryURL', function(urlPrefix, validateService, dateService, increaseAmount) {
 	return {
 		getURL: function(hashtags, date) {
 			var tempURL = urlPrefix;
 			if(!validateService.checkValid(hashtags) && (!validateService.checkValid(date) || date == 0)) {
 				// no presets stored; this is the same as calling /messages, but in the right order
-				return tempURL + "records?count=50&callback=JSON_CALLBACK";
+				return tempURL + "records?count=" + increaseAmount + "&callback=JSON_CALLBACK";
 			} else if(validateService.checkValid(hashtags)) {
 				// hashes are preset
 				var tagQuery = hashtags[0];
@@ -223,7 +223,8 @@ angular.module('consumer', ['common'])
 	{name: "3 months ago", id: "3"},
 	{name: "6 months ago", id: "4"}
 ])
-.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, $http, basicStoryURL, validateService) {
+.constant('increaseAmount', 15)
+.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, $http, basicStoryURL, validateService, increaseAmount) {
 	$scope.stories = allStoriesService.getStories();
 
 	$scope.story = {
@@ -291,6 +292,21 @@ angular.module('consumer', ['common'])
 		console.log("publish...");
 		supersonic.data.channel('story-name').publish(storyName);
 	}
+
+	$scope.addPlus = function(num) {
+		if(num === increaseAmount) {
+			return "" + num + "+";
+		} else {
+			return num;
+		}
+	}
+
+	$scope.cancelCreate = function() {
+		$scope.story.createInput = true;
+		$scope.story.createButton = true;
+		$scope.newStoryName = "";
+		$scope.newStoryTags = "";
+	}
 })
 .controller('DrawerController', function($scope, supersonic, allStoriesService) {
 
@@ -298,12 +314,25 @@ angular.module('consumer', ['common'])
 		allStoriesService.deleteAll();
 	}
 })
-.controller('LinkController', function($scope, supersonic) {
+.controller('LinkController', function($scope, supersonic, $sce) {
 	$scope.modLink = function(message) {
-		// John Gruber's regex, modified for JS
-		var regex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
-		var modified = message.replace(regex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
-		return modified;
+		// detect anchor tags
+		var anchor = new RegExp(/<a[^>]*>([^<]+)<\/a>/g);
+		if(anchor.test(message)) {
+			console.log(message);
+			// John Gruber's regex, modified for JS
+			var linkRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
+			var txtRegex = />.*</;
+			var link = message.match(linkRegex)[0];
+			var text = message.match(txtRegex);
+
+			// var modified = message.replace(regex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
+			var modified = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
+			console.log("mod: " + modified);
+			return $sce.trustAsHtml(modified);
+		} else {
+			return $sce.trustAsHtml(message);
+		}
 	}
 })
 .controller('AutocompleteController', function ($scope, $http, supersonic, urlPrefix) {

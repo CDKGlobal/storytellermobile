@@ -26,7 +26,7 @@
         <ul>
             <li ng-repeat="msg in allMsg.messages.slice()" ng-controller="LinkController" class="message">
                 <p class="userId">{{msg.userId}} </p>
-                <p class="messageBody" ng-bind="modLink(msg.message)"></p>
+                <p class="messageBody" ng-bind-html="modLink(msg.message)"></p>
                 <p class="subelement" ng-bind="modTime(msg.timeStamp)"></p>
                 <p class="subelement">
                     <span ng-repeat="hashes in msg.hashtags" class="hashtag">

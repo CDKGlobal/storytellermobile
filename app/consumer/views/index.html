@@ -26,7 +26,7 @@
         <div class="buttonBar">
             <super-navigate view-id="story-stream">
                 <button class="singleStory" ng-repeat="story in stories" ng-click="publishInfo(story.name)">
-                    <span class="badge badge-assertive notifButton">{{story.notifications}}</span>
+                    <span class="badge badge-assertive notifButton" ng-bind="addPlus(story.notifications)"></span>
                     <span>{{story.name}}</span>
                     <span class="icon super-ios-arrow-forward storyButton"></span>
                 </button>
@@ -34,12 +34,17 @@
         </div>
 
         <div id="newStory">
-            <button class="drawerButton" ng-click="createStory()">Create New Stream</button>
+            <div class="centerButton">
+                <button class="drawerButton" ng-click="createStory()">Create New Stream</button>
+            </div>
             <span id="storyInput" ng-hide="story.createInput">
                 <label>Name: </label><span><input type="text" ng-model="newStoryName"></span>
                 <label>Tags: </label><span><input type="text" ng-model="newStoryTags"></span>
             </span>
-            <button class="drawerButton" ng-hide="story.createButton" ng-click="approveCreate()">Follow Stream</button>
+            <div class="centerButton">
+                <button class="drawerButton" ng-hide="story.createButton" ng-click="approveCreate()">Follow Stream</button>
+                <button class="drawerButton" ng-hide="story.createButton" ng-click="cancelCreate()">Cancel</button>
+            </div>
         </div>
 
 
