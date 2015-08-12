@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService) {
+.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService, increaseAmount) {
 	var count;
 
 	$scope.index = {spinner: false};
@@ -13,13 +13,13 @@ angular.module('consumer')
 		$scope.storyTitle = message;
 
 		storyName = message;
-		$scope.update(15);
+		$scope.update(increaseAmount);
 	});
 
 	supersonic.ui.views.current.whenVisible(function() {
 		$scope.stories.hide = true;
 		$timeout(function() {
-			$scope.update(15);
+			$scope.update(increaseAmount);
 		});
 	});
 
@@ -32,7 +32,7 @@ angular.module('consumer')
 			count = num;
 		} else {
 			supersonic.logger.log("adding fifteen");
-			count += 15;
+			count += increaseAmount;
 		}
 
 		$scope.index.spinner = false;
