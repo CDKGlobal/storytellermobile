@@ -47,14 +47,14 @@ angular.module('consumer')
 		var baseUrl = urlPrefix;
 		var presets = allStoriesService.getHashes($scope.storyTitle);
 		var presetQuery = "";
-		if(angular.isDefined(presets) && presets != "" && presets != null && startDate != null) {
+		if(validateService.checkValid(presets)&& startDate != null) {
 			presetQuery = presets[0];
 			for(var i = 1; i < presets.length; i++) {
 				presetQuery += "," + presets[i];
 			}
 			console.log("query+startDate loading...");
 			baseUrl += "search?query=" + presetQuery + "&start=" + startDate + "&count=" + count + "&callback=JSON_CALLBACK";
-		} else if (angular.isDefined(presets) && presets != "" && presets != null && startDate == null) {
+		} else if (validateService.checkValid(presets) && startDate == null) {
 			presetQuery = presets[0];
 			for(var i = 1; i < presets.length; i++) {
 				presetQuery += "," + presets[i];
