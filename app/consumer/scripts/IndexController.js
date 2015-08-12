@@ -206,7 +206,7 @@ angular.module('consumer', ['common'])
 
 			var current = new Date();
 			if(toSubtract === 0) {
-				return '2015-01-01';
+				return null;
 			} else {
 				console.log(toSubtract);
 				current.setMonth(current.getMonth() - toSubtract);

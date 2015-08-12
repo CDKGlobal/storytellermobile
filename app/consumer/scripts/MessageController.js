@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService, increaseAmount) {
+.controller('MessageController', function($scope, supersonic, $http, urlPrefix, modTimestamp, $timeout, allStoriesService, validateService, increaseAmount, dateService) {
 	var count;
 
 	$scope.index = {spinner: false};
@@ -38,16 +38,34 @@ angular.module('consumer')
 		$scope.index.spinner = false;
 		supersonic.logger.log("updating...");
 
+		var startDate = null;
+		if(allStoriesService.getDate(storyName) != null) {
+			var setDate = allStoriesService.getDate(storyName);
+			startDate = dateService.subtractMonths(setDate);
+		}
+
 		var baseUrl = urlPrefix;
 		var presets = allStoriesService.getHashes($scope.storyTitle);
 		var presetQuery = "";
-		if(angular.isDefined(presets) && presets != "" && presets != null) {
+		if(validateService.checkValid(presets)&& startDate != null) {
 			presetQuery = presets[0];
 			for(var i = 1; i < presets.length; i++) {
 				presetQuery += "," + presets[i];
 			}
+			console.log("query+startDate loading...");
+			baseUrl += "search?query=" + presetQuery + "&start=" + startDate + "&count=" + count + "&callback=JSON_CALLBACK";
+		} else if (validateService.checkValid(presets) && startDate == null) {
+			presetQuery = presets[0];
+			for(var i = 1; i < presets.length; i++) {
+				presetQuery += "," + presets[i];
+			}
+			console.log("query loading...");
 			baseUrl += "search?query=" + presetQuery + "&count=" + count + "&callback=JSON_CALLBACK";
+		} else if (startDate != null) {
+			console.log("startDate loading...");
+			baseUrl += "time?start=" + startDate + "&count=" + count + "&callback=JSON_CALLBACK";
 		} else {
+			console.log("records loading...");
 			baseUrl += "records?count=" + count + "&callback=JSON_CALLBACK";
 		}
 		console.log(baseUrl);
