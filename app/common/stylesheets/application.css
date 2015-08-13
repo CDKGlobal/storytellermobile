@@ -6,6 +6,7 @@
 
 .buttonBar {
 	border: 2px solid transparent;
+	overflow: hidden;
 }
 
 .centerButton {
@@ -146,6 +147,13 @@
 	font-size: 12pt !important;
 }
 
+.nameAndPreview {
+	padding-left: 20px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: left;
+}
+
 #newStory input {
 	padding: 0px 5px;
 	background-color: transparent;
@@ -154,9 +162,15 @@
 	margin: 5px;
 }
 
+.note {
+	padding-left: 30px;
+	font-size: 9pt;
+}
+
 .notifButton {
 	float: left;
-	margin: 0px 10px;
+	margin-top: 30px;
+	width: 40px;
 }
 
 #refreshButton {
@@ -224,11 +238,6 @@
 	opacity: 0.65;
 }
 
-.storyButton {
-	float: right;
-	margin: 0px 10px;
-}
-
 #storyInput {
 	display: block;
 }
@@ -245,6 +254,20 @@
 	clear: left;
 	margin: 10px;
 	width: 50px;
+}
+
+.storyName {
+	text-align: left;
+	margin-bottom: 3px;
+}
+
+.streamPreview {
+	font-size: 10pt;
+	margin-left: 15px;
+	margin-right: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	color: gray;
 }
 
 .subelement, .messageBody {

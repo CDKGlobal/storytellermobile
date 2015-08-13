@@ -197,7 +197,11 @@ angular.module('consumer', ['common'])
 					// date is also set
 					startQuery = dateService.subtractMonths(date);
 					console.log(startQuery);
-					return tempURL + "search?query=" + tagQuery + "&start=" + startQuery + "&callback=JSON_CALLBACK";
+					if(startQuery == null) {
+						return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
+					} else {
+						return tempURL + "search?query=" + tagQuery + "&start=" + startQuery + "&callback=JSON_CALLBACK";
+					}
 				} else {
 					return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
 				}
@@ -205,7 +209,11 @@ angular.module('consumer', ['common'])
 				// only date is set
 				startQuery = dateService.subtractMonths(date);
 				console.log(startQuery);
-				return tempURL + "time?start=" + startQuery + "&callback=JSON_CALLBACK";
+				if(startQuery == null) {
+					return tempURL + "records?count=" + increaseAmount + "&callback=JSON_CALLBACK";
+				} else {
+					return tempURL + "time?start=" + startQuery + "&callback=JSON_CALLBACK";
+				}
 			}
 		}
 	}
@@ -332,6 +340,11 @@ angular.module('consumer', ['common'])
 		$scope.newStoryName = "";
 		$scope.newStoryTags = "";
 	}
+
+	$scope.previews = function(storyName) {
+		return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", "hey", storyName];
+	}
+
 })
 .controller('DrawerController', function($scope, supersonic, allStoriesService) {
 
@@ -340,26 +353,32 @@ angular.module('consumer', ['common'])
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
+	// John Gruber's regex, modified for JS
 	var linkRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
 	var linkExp = new RegExp(linkRegex);
-	var anchorRegex = /<a[^>]*>([^<]+)<\/a>/g;
+	var anchorRegex = /<a[^>]*>([^<]+)<\/a>/;
 	var anchorExp = new RegExp(anchorRegex);
+	var txtRegex = />.*</;
 	$scope.modLink = function(message) {
-		// anchored link		
+		// anchored link exists
 		if(anchorExp.test(message)) {
-			// John Gruber's regex, modified for JS
-			var txtRegex = />.*</;
-			var link = message.match(linkRegex)[0];
-			var text = message.match(txtRegex)[0];
-			var modLink = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
-			var modified = message.replace(anchorRegex, modLink);
-			console.log("anchor mod: " + message + " **** " + modified);
-			return $sce.trustAsHtml(modified);
-		} else if(linkExp.test(message)) {
-			// if there is an unanchored link
-			var modified = message.replace(linkRegex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
-			console.log("raw link: " + message)
-			return $sce.trustAsHtml(modified);
+			var links = message.match(linkRegex);
+			// var text = message.match(txtRegex);
+			for(var i = 0; i < links.length; i++) {
+				var text = links[i].match(txtRegex);
+				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + links[i] +"\')\" href=\"\"" + text + "/a>";
+				message.replace(links[i], modLink);
+			}
+
+			// var modLink = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
+			// var modified = message.replaceAll(anchorRegex, modLink);
+			console.log("anchor mod: " + message);
+			return $sce.trustAsHtml(message);
+		// } else if(linkExp.test(message)) {
+		// 	// if there is an unanchored link
+		// 	var modified = message.replace(linkRegex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
+		// 	console.log("raw link: " + message)
+		// 	return $sce.trustAsHtml(modified);
 		} else {
 			console.log("return unchanged");
 			return $sce.trustAsHtml(message);
@@ -387,7 +406,5 @@ angular.module('consumer', ['common'])
 				});
 			hold = newest;
     	}
-
-    	
     };
 });

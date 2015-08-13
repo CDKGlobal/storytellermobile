@@ -26,9 +26,15 @@
         <div class="buttonBar">
             <super-navigate view-id="story-stream">
                 <button class="singleStory" ng-repeat="story in stories | orderBy:'-latestNotifStamp'" ng-click="publishInfo(story.name)">
-                    <span class="badge badge-assertive notifButton" ng-bind="addPlus(story.notifications)"></span>
-                    <span>{{story.name}}</span>
-                    <span class="icon super-ios-arrow-forward storyButton"></span>
+                    <div class="badge badge-assertive notifButton" ng-bind="addPlus(story.notifications)"></div>
+                    <div class="nameAndPreview">
+                        <span class="storyName">{{story.name}}</span>
+                        <div class="streamPreview">
+                            <ul>
+                                <li ng-repeat="preview in previews(story.name)">{{preview}}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </button>
             </super-navigate>
         </div>
@@ -40,6 +46,7 @@
             <span id="storyInput" ng-hide="story.createInput">
                 <label>Name: </label><span><input type="text" ng-model="newStoryName"></span>
                 <label>Tags: </label><span><input type="text" ng-model="newStoryTags"></span>
+                <p class="note">Please enter comma-separated tags</p>
             </span>
             <div class="centerButton">
                 <button class="drawerButton" ng-hide="story.createButton" ng-click="approveCreate()">Follow Stream</button>
