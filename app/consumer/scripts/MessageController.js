@@ -86,7 +86,7 @@ angular.module('consumer')
 			$scope.index.spinner = true;
 			$scope.stories.hide = false;
 			if(validateService.checkValid(data)) {
-				allStoriesService.setLatestStamp(storyName, $scope.modTime(data.messages[0].timeStamp));
+				allStoriesService.setLatestViewStamp(storyName, $scope.modTime(data.messages[0].timeStamp));
 			}
 		})
 		.error(function(data, status, headers, config) {
