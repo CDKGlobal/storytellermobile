@@ -2,7 +2,12 @@ angular.module('consumer', ['common'])
 .service('allStoriesService', function($filter) {
 	var findStory = function(storyName) {
 		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		return $filter('filter')(storiesCopy, { name: storyName })[0];
+		var matches = $filter('filter')(storiesCopy, { name: storyName});
+		if (matches != null) {
+			return matches[0];
+		} else {
+			return null;
+		}
 	}
 
 	var getStories = function() {
@@ -15,7 +20,7 @@ angular.module('consumer', ['common'])
 			tempArr = [];
 		}
 		// if newName is valid and not already taken
-		if(newName != null && angular.isDefined(newName)) {
+		if(newName != null && angular.isDefined(newName) && findStory(newName) == null) {
 			if(newTags == null || angular.isUndefined(newTags)) {
 				newTags = null;
 			} else {
@@ -62,7 +67,9 @@ angular.module('consumer', ['common'])
 				if(temp == null) {
 					temp = [];
 				}
-				temp.push(newFilter);
+				if (temp.indexOf(newFilter) == -1) {
+					temp.push(newFilter);
+				}
 				storiesCopy[i].tags = temp;
 			}
 		}
