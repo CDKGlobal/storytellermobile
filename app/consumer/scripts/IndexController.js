@@ -369,16 +369,8 @@ angular.module('consumer', ['common'])
 				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + links[i] +"\')\" href=\"\"" + text + "/a>";
 				message.replace(links[i], modLink);
 			}
-
-			// var modLink = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
-			// var modified = message.replaceAll(anchorRegex, modLink);
 			console.log("anchor mod: " + message);
 			return $sce.trustAsHtml(message);
-		// } else if(linkExp.test(message)) {
-		// 	// if there is an unanchored link
-		// 	var modified = message.replace(linkRegex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
-		// 	console.log("raw link: " + message)
-		// 	return $sce.trustAsHtml(modified);
 		} else {
 			console.log("return unchanged");
 			return $sce.trustAsHtml(message);
