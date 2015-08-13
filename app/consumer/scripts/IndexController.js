@@ -27,7 +27,7 @@ angular.module('consumer', ['common'])
 				newTags = newTags.split(/[\s,]+/);
 			}
 			var newStamp = new Date();
-			tempArr.push({name: newName, tags: newTags, date: newDate, latestStamp: newStamp, notifications: 0});
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestViewStamp: newStamp, notifications: 0, latestNotifStamp: newStamp});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
@@ -101,16 +101,16 @@ angular.module('consumer', ['common'])
 		localStorage.setItem('allStories', JSON.stringify(storiesCopy));		
 	};
 
-	var getLatestStamp = function(storyName) {
+	var getLatestViewStamp = function(storyName) {
 		var storiesCopy = findStory(storyName);
-		return storiesCopy.latestStamp;
+		return storiesCopy.latestViewStamp;
 	};
 
-	var setLatestStamp = function(storyName, newStamp) {
+	var setLatestViewStamp = function(storyName, newStamp) {
 		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
 		for(var i = 0; i < storiesCopy.length; i++) {
 			if(storiesCopy[i].name === storyName) {
-				storiesCopy[i].latestStamp = newStamp;
+				storiesCopy[i].latestViewStamp = newStamp;
 			}
 		}
 		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
@@ -131,6 +131,21 @@ angular.module('consumer', ['common'])
 		return storiesCopy.notifications;
 	}
 
+	var getLatestNotifStamp = function(storyName) {
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.latestNotifStamp;
+	}
+
+	var setLatestNotifStamp = function(storyName, newStamp) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].latestNotifStamp = newStamp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	}
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
@@ -141,10 +156,12 @@ angular.module('consumer', ['common'])
 		addHash: addHash,
 		deleteHash: deleteHash,
 		setDate: setDate,
-		getLatestStamp: getLatestStamp,
-		setLatestStamp: setLatestStamp,
+		getLatestViewStamp: getLatestViewStamp,
+		setLatestViewStamp: setLatestViewStamp,
 		getNotifications: getNotifications,
-		setNotifications: setNotifications
+		setNotifications: setNotifications,
+		getLatestNotifStamp: getLatestNotifStamp,
+		setLatestNotifStamp: setLatestNotifStamp
 	};
 })
 .service('validateService', function() {
@@ -257,12 +274,13 @@ angular.module('consumer', ['common'])
 				if(validateService.checkValid(data.messages)) {
 					// count new messages, using timestamp
 					var newMsgCount = 0;
-					var savedStamp = allStoriesService.getLatestStamp(story.name);
+					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
 					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
 						newMsgCount++;
 					}
-					// update notification field
+					// update notification field, time of latest notification
 					allStoriesService.setNotifications(story.name, newMsgCount);
+					allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
 				}
 			})
 			.error(function(data, status, headers, config) {
@@ -322,22 +340,28 @@ angular.module('consumer', ['common'])
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
+	var linkRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
+	var linkExp = new RegExp(linkRegex);
+	var anchorRegex = /<a[^>]*>([^<]+)<\/a>/g;
+	var anchorExp = new RegExp(anchorRegex);
 	$scope.modLink = function(message) {
-		// detect anchor tags
-		var anchor = new RegExp(/<a[^>]*>([^<]+)<\/a>/g);
-		if(anchor.test(message)) {
-			console.log(message);
+		// anchored link		
+		if(anchorExp.test(message)) {
 			// John Gruber's regex, modified for JS
-			var linkRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
 			var txtRegex = />.*</;
 			var link = message.match(linkRegex)[0];
-			var text = message.match(txtRegex);
-
-			// var modified = message.replace(regex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
-			var modified = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
-			console.log("mod: " + modified);
+			var text = message.match(txtRegex)[0];
+			var modLink = "<a onclick=\"supersonic.app.openURL(\'" + link +"\')\" href=\"\"" + text + "/a>";
+			var modified = message.replace(anchorRegex, modLink);
+			console.log("anchor mod: " + message + " **** " + modified);
+			return $sce.trustAsHtml(modified);
+		} else if(linkExp.test(message)) {
+			// if there is an unanchored link
+			var modified = message.replace(linkRegex, "<a onclick=\"supersonic.app.openURL('$1')\" href=\"\">$1</a>");
+			console.log("raw link: " + message)
 			return $sce.trustAsHtml(modified);
 		} else {
+			console.log("return unchanged");
 			return $sce.trustAsHtml(message);
 		}
 	}
