@@ -306,17 +306,21 @@ angular.module('consumer', ['common'])
 				supersonic.logger.log("Success! " + status);
 				// if stored timestamp is different from the first message in returned api call
 				if(validateService.checkValid(data.messages)) {
-					// count new messages, using timestamp
 					var newMsgCount = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
+					// counts stories
 					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
-						newMsgCount++;
-						// add 3 most recent
 						if(msgList.length < 3) {
 							msgList.push(data.messages[newMsgCount].message);
 						}
+						newMsgCount++;
 					}
-					// update notification field, time of latest notification
+					// if no more new stories, but still need to count preview msgs
+					while(newMsgCount < data.messages.length && msgList.length < 3) {
+						msgList.push(data.messages[newMsgCount].message);
+						newMsgCount++;
+
+					}
 					allStoriesService.setNotifications(story.name, newMsgCount);
 					allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
 				}
