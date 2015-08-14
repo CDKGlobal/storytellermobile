@@ -359,22 +359,23 @@ angular.module('consumer', ['common'])
 	var anchorRegex = /<a[^>]*>([^<]+)<\/a>/;
 	var anchorExp = new RegExp(anchorRegex);
 	var txtRegex = />.*</;
+	var onclickRegex = /<a onclick=/;
 	$scope.modLink = function(message) {
-		// anchored link exists
+		var result;
 		if(anchorExp.test(message)) {
-			var links = message.match(linkRegex);
-			// var text = message.match(txtRegex);
-			for(var i = 0; i < links.length; i++) {
-				var text = links[i].match(txtRegex);
-				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + links[i] +"\')\" href=\"\"" + text + "/a>";
-				message.replace(links[i], modLink);
+			supersonic.logger.log("before while");
+			while((result = anchorExp.exec(message)) !== null && result[0].indexOf("<a onclick") < 0) {
+				supersonic.logger.log("result[0]: " + result[0]);
+				// do something with result
+				// result is the whole anchor tag; take out the link
+				var text = result[0].match(txtRegex);
+				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + linkExp.exec(result[0])[0] +"\')\" href=\"\"" + text + "/a>";
+				supersonic.logger.log("message.indexOf(result[0]): " + message.indexOf(result[0]))
+				message = message.replace(result[0], modLink);
+				supersonic.logger.log(message);
 			}
-			console.log("anchor mod: " + message);
-			return $sce.trustAsHtml(message);
-		} else {
-			console.log("return unchanged");
-			return $sce.trustAsHtml(message);
 		}
+		return $sce.trustAsHtml(message);
 	}
 })
 .controller('AutocompleteController', function ($scope, $http, supersonic, urlPrefix) {
