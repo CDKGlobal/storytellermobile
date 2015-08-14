@@ -311,7 +311,8 @@ angular.module('consumer', ['common'])
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
 					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
 						newMsgCount++;
-						if(msgList.length <= 3) {
+						// add 3 most recent
+						if(msgList.length < 3) {
 							msgList.push(data.messages[newMsgCount].message);
 						}
 					}
@@ -323,8 +324,12 @@ angular.module('consumer', ['common'])
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
-			msgList.push({name: story.name, previews: msgList});
-			previewsList.push(msgList);
+			// ensures previews is of length 3 (preserved spacing)
+			while(msgList.length < 3) {
+				// non-breaking space
+				msgList.push("\u00A0\u00A0");
+			}
+			previewsList.push({name: story.name, previews: msgList});
 		})
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
@@ -380,9 +385,17 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.previews = function(storyName) {
-		var match = $filter('filter')(previewsList, { name: storyName});
-		// return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", "hey", storyName];
-		return match[0].previews;
+		// var match = $filter('filter')(previewsList, { name: storyName});
+		return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", storyName, "\u00A0\u00A0"];
+		// return match[0].previews;
+	}
+
+	$scope.allowBlanks = function(previewMsg) {
+		if(previewMsg === "") {
+			return "<br />";
+		} else {
+			return previewMsg;
+		}
 	}
 
 })

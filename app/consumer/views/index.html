@@ -31,7 +31,9 @@
                         <span class="storyName">{{story.name}}</span>
                         <div class="streamPreview">
                             <ul>
-                                <li ng-repeat="preview in previews(story.name)">{{preview}}</li>
+                                <li ng-repeat="preview in previews(story.name)">
+                                    <span>{{preview}}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
