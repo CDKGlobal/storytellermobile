@@ -247,6 +247,20 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
+.service('notifDelayService', function() {
+	var setTimeout = function(newTime) {
+		localStorage.setItem('notifDelay', JSON.stringify(newTime));
+	}
+
+	var getTimeout = function() {
+		return JSON.parse(localStorage.getItem('notifDelay'));
+	}
+
+	return {
+		setTimeout: setTimeout,
+		getTimeout: getTimeout
+	}
+})
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
 .constant('presetTimes', [
 	{name: "All time", id: "0"},
@@ -255,9 +269,19 @@ angular.module('consumer', ['common'])
 	{name: "3 months ago", id: "3"},
 	{name: "6 months ago", id: "4"}
 ])
+.constant('presetDelays', [
+	{name: "3 seconds", timeSec: "3", id: "0"},
+	{name: "30 seconds", timeSec: "30", id: "1"},
+	{name: "1 minute", timeSec: "60", id: "2"},
+	{name: "5 minutes", timeSec: "120", id: "3"},
+	{name: "1 hour", timeSec: "3600", id: "4"}
+])
 .constant('increaseAmount', 15)
-.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, $http, basicStoryURL, validateService, increaseAmount) {
+.controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, 
+	$http, basicStoryURL, validateService, increaseAmount, $filter, presetDelays, notifDelayService) {
+
 	$scope.stories = allStoriesService.getStories();
+	var previewsList = [];
 
 	$scope.story = {
 		createInput: true,
@@ -273,6 +297,7 @@ angular.module('consumer', ['common'])
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
 		angular.forEach(storiesCopy, function(story) {
+			var msgList = [];
 			// pass in array of hashes, date as a number
 			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
@@ -285,6 +310,9 @@ angular.module('consumer', ['common'])
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
 					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
 						newMsgCount++;
+						if(msgList.length <= 3) {
+							msgList.push(data.messages[newMsgCount].message);
+						}
 					}
 					// update notification field, time of latest notification
 					allStoriesService.setNotifications(story.name, newMsgCount);
@@ -294,6 +322,8 @@ angular.module('consumer', ['common'])
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
+			msgList.push({name: story.name, previews: msgList});
+			previewsList.push(msgList);
 		})
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
@@ -301,9 +331,16 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.updateNotifications();
+	var timeoutIndex = notifDelayService.getTimeout();
+	var match = $filter('filter')(presetDelays, { id: timeoutIndex});
+	var timeoutSeconds = parseInt(match.timeSec) * 1000;
 	$interval(function() {
 		$scope.updateNotifications();
-	}, 3000);
+		timeoutIndex = notifDelayService.getTimeout();
+		match = $filter('filter')(presetDelays, { id: timeoutIndex});
+		timeoutSeconds = parseInt(match.timeSec) * 1000;
+		console.log(match);
+	}, timeoutSeconds);
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;
@@ -342,11 +379,26 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.previews = function(storyName) {
-		return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", "hey", storyName];
+		var match = $filter('filter')(previewsList, { name: storyName});
+		// return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", "hey", storyName];
+		return match[0].previews;
 	}
 
 })
-.controller('DrawerController', function($scope, supersonic, allStoriesService) {
+.controller('DrawerController', function($scope, supersonic, allStoriesService, presetDelays, notifDelayService, $timeout, $filter) {
+	$scope.delays = presetDelays;
+
+	$timeout(function() {
+		if(notifDelayService.getTimeout() != null) {
+			$scope.delayDropdown = $scope.delays[parseInt(notifDelayService.getTimeout())];
+		} else {
+			$scope.startDropdown = $scope.delays[0];
+		}
+	});
+
+	$scope.changedDelay = function(newTime) {
+		notifDelayService.setTimeout(newTime.id);
+	}
 
 	$scope.deleteAll = function() {
 		allStoriesService.deleteAll();
@@ -366,8 +418,6 @@ angular.module('consumer', ['common'])
 			supersonic.logger.log("before while");
 			while((result = anchorExp.exec(message)) !== null && result[0].indexOf("<a onclick") < 0) {
 				supersonic.logger.log("result[0]: " + result[0]);
-				// do something with result
-				// result is the whole anchor tag; take out the link
 				var text = result[0].match(txtRegex);
 				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + linkExp.exec(result[0])[0] +"\')\" href=\"\"" + text + "/a>";
 				supersonic.logger.log("message.indexOf(result[0]): " + message.indexOf(result[0]))
