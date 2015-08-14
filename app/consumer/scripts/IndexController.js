@@ -296,6 +296,7 @@ angular.module('consumer', ['common'])
 
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
+		previewsList = [];
 		angular.forEach(storiesCopy, function(story) {
 			var msgList = [];
 			// pass in array of hashes, date as a number
