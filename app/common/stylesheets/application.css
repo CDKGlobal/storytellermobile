@@ -279,3 +279,27 @@
 	font-weight: bold !important;
 	text-decoration: underline;
 }
+
+.autocompleteResult {
+	width: 78%;
+	padding-left: 2px;
+	padding-right: auto;
+}
+
+.sidebyside {
+	display: inline-block;
+	vertical-align:top;
+}
+
+.odd {
+  background-color: white !important;
+}
+
+.even {
+  background-color: lightgrey !important;
+}
+
+.singleResult {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}

@@ -21,11 +21,13 @@
             
             <span><input type="text" ng-keyup="filterTagsBySearchTerm()" autocorrect="off" autocapitalize="off" placeholder="type anything to search" ng-model="search.keywords"></span>
 
-            <h6>Recommend hashtags: <h6>
-            <div>
-                <div ng-repeat="x in dealerNameSearchTerm">
-                    <div>
-                        <span>{{ x.hashTag }} </span>
+            <div class="sidebyside">
+                <h6>Recommend <br/>hashtags: <h6>
+            </div>
+            <div class="autocompleteResult sidebyside list list-inset">
+                <div ng-repeat="hashtag in hashtagSuggestions" ng-click="changeSearchWord(hashtag)">
+                    <div class="singleResult item" ng-class-odd="'odd'" ng-class-even="'even'">
+                        <h4 style="color:blue;text-align: center;">{{hashtag}}</h4>
                     </div>
                 </div>
             </div>
