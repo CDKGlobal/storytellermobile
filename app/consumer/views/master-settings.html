@@ -8,6 +8,16 @@
 
     <h4>App Settings</h4>
 
+    <div id="setDelay">
+    	<label>Delay:</label>
+        <span>
+            <select ng-model="delayDropdown" ng-options="delay.name for delay in delays" ng-change="changedDelay(delayDropdown)"></select>
+        </span>
+    </div>
+
+    <br />
+    <br />
+
 	<div id="deleteAll">
 		<button class="drawerButton" ng-click="deleteAll()">Delete All Data</button>
 	</div>

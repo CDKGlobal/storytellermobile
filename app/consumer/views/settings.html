@@ -23,8 +23,9 @@
     <h3>Default date range</h3>
     <div class="dateInput">
         <label>From:</label>
-        <span><select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)"></span>
-        </select>
+        <span>
+            <select ng-model="startDropdown" ng-options="time.name for time in times" ng-change="changedDate(startDropdown)"></select>
+        </span>
     </div>
     <p class="note">Note: this only applies to the stream.</p>
 
