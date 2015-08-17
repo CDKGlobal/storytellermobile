@@ -317,7 +317,8 @@ angular.module('consumer', ['common'])
 						console.log(story.name + ": " + msgList);
 						if(msgList.length < 3) {
 							console.log("entered < 3");
-							msgList.push(data.messages[msgIndex].message);
+							var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
+							msgList.push(item);
 						}
 						msgIndex++;
 					}
@@ -364,7 +365,6 @@ angular.module('consumer', ['common'])
 		} else {
 			timeoutSeconds = parseInt(match[0].timeSec) * 1000;
 		}
-		// timeoutSeconds = parseInt(match[0].timeSec) * 1000;
 		clearTimeout(timer);
 		timer = setTimeout(cycleNotifications, timeoutSeconds);
 	}
@@ -416,7 +416,6 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
-		// return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", storyName, "\u00A0\u00A0"];
 		console.log("match 0 previews: " + match[0].previews);
 		return match[0].previews;
 	}
