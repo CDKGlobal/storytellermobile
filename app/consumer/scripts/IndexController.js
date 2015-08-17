@@ -342,15 +342,29 @@ angular.module('consumer', ['common'])
 
 	$scope.updateNotifications();
 	var timeoutIndex = notifDelayService.getTimeout();
+	// match timeout to a number
 	var match = $filter('filter')(presetDelays, { id: timeoutIndex});
-	var timeoutSeconds = parseInt(match.timeSec) * 1000;
-	$interval(function() {
+	// account for milliseconds
+	var timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+	function cycleNotifications() {
+		console.log(timeoutSeconds);
 		$scope.updateNotifications();
 		timeoutIndex = notifDelayService.getTimeout();
 		match = $filter('filter')(presetDelays, { id: timeoutIndex});
-		timeoutSeconds = parseInt(match.timeSec) * 1000;
-		console.log(match);
-	}, timeoutSeconds);
+		timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+		clearTimeout(timer);
+		timer = setTimeout(cycleNotifications, timeoutSeconds);
+	}
+
+	var timer = setTimeout(cycleNotifications, timeoutSeconds);
+
+	supersonic.data.channel('timeout-change').subscribe(function(message) {
+		match = $filter('filter')(presetDelays, { id: message});
+		timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+		clearTimeout(timer);
+		timer = setTimeout(cycleNotifications, timeoutSeconds);
+		console.log("changed timeout: " + timeoutSeconds);
+	});
 
 	$scope.createStory = function() {
 		$scope.story.createInput = false;
@@ -416,6 +430,7 @@ angular.module('consumer', ['common'])
 
 	$scope.changedDelay = function(newTime) {
 		notifDelayService.setTimeout(newTime.id);
+		supersonic.data.channel('timeout-change').publish(newTime.id);
 	}
 
 	$scope.deleteAll = function() {
