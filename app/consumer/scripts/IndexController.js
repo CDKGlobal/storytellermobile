@@ -296,32 +296,33 @@ angular.module('consumer', ['common'])
 
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
-		previewsList = [];
+		previewsList.length = 0;
 		angular.forEach(storiesCopy, function(story) {
 			var msgList = [];
-			// pass in array of hashes, date as a number
+			console.log(story.name + " " + msgList);
 			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Success! " + status);
-				// if stored timestamp is different from the first message in returned api call
 				if(validateService.checkValid(data.messages)) {
 					var newMsgCount = 0;
+					var msgIndex = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
-					// counts stories
-					while(newMsgCount < data.messages.length && (new Date(data.messages[newMsgCount].timeStamp)).toLocaleString() != savedStamp) {
-						if(msgList.length < 3) {
-							msgList.push(data.messages[newMsgCount].message);
+					while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
+						var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
+						var savedTime = new Date(savedStamp).getTime();
+						if(msgTime > savedTime) {
+							newMsgCount++;
 						}
-						newMsgCount++;
+						console.log(story.name + ": " + msgList);
+						if(msgList.length < 3) {
+							console.log("entered < 3");
+							msgList.push(data.messages[msgIndex].message);
+						}
+						msgIndex++;
 					}
-					// if no more new stories, but still need to count preview msgs
-					while(newMsgCount < data.messages.length && msgList.length < 3) {
-						msgList.push(data.messages[newMsgCount].message);
-						newMsgCount++;
-
-					}
-					allStoriesService.setNotifications(story.name, newMsgCount);
+					// fix off-by-one error
+					allStoriesService.setNotifications(story.name, newMsgCount - 1);
 					allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
 				}
 			})
@@ -334,7 +335,9 @@ angular.module('consumer', ['common'])
 				msgList.push("\u00A0\u00A0");
 			}
 			previewsList.push({name: story.name, previews: msgList});
+			msgList.length = 0;
 		})
+		console.log(previewsList);
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
 		});
@@ -344,14 +347,24 @@ angular.module('consumer', ['common'])
 	var timeoutIndex = notifDelayService.getTimeout();
 	// match timeout to a number
 	var match = $filter('filter')(presetDelays, { id: timeoutIndex});
-	// account for milliseconds
-	var timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+	var timeoutSeconds;
+	if(!validateService.checkValid(match)) {
+		notifDelayService.setTimeout(0);
+		timeoutSeconds = 3000;
+	} else {
+		timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+	}
 	function cycleNotifications() {
-		console.log(timeoutSeconds);
 		$scope.updateNotifications();
 		timeoutIndex = notifDelayService.getTimeout();
 		match = $filter('filter')(presetDelays, { id: timeoutIndex});
-		timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+		if(!validateService.checkValid(match)) {
+			notifDelayService.setTimeout(0);
+			timeoutSeconds = 3000;
+		} else {
+			timeoutSeconds = parseInt(match[0].timeSec) * 1000;
+		}
+		// timeoutSeconds = parseInt(match[0].timeSec) * 1000;
 		clearTimeout(timer);
 		timer = setTimeout(cycleNotifications, timeoutSeconds);
 	}
@@ -363,7 +376,6 @@ angular.module('consumer', ['common'])
 		timeoutSeconds = parseInt(match[0].timeSec) * 1000;
 		clearTimeout(timer);
 		timer = setTimeout(cycleNotifications, timeoutSeconds);
-		console.log("changed timeout: " + timeoutSeconds);
 	});
 
 	$scope.createStory = function() {
@@ -403,17 +415,10 @@ angular.module('consumer', ['common'])
 	}
 
 	$scope.previews = function(storyName) {
-		// var match = $filter('filter')(previewsList, { name: storyName});
-		return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", storyName, "\u00A0\u00A0"];
-		// return match[0].previews;
-	}
-
-	$scope.allowBlanks = function(previewMsg) {
-		if(previewMsg === "") {
-			return "<br />";
-		} else {
-			return previewMsg;
-		}
+		var match = $filter('filter')(previewsList, { name: storyName});
+		// return ["Real data about real things in the world ahh data data data data data hippopotamus moose and beans", storyName, "\u00A0\u00A0"];
+		console.log("match 0 previews: " + match[0].previews);
+		return match[0].previews;
 	}
 
 })
