@@ -324,7 +324,9 @@ angular.module('consumer', ['common'])
 					}
 					// fix off-by-one error
 					allStoriesService.setNotifications(story.name, newMsgCount - 1);
-					allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
+					if(data.messages[0].length > 0) {
+						allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
+					}
 				}
 			})
 			.error(function(data, status, headers, config) {
