@@ -27,7 +27,7 @@ angular.module('consumer', ['common'])
 				newTags = newTags.split(/[\s,]+/);
 			}
 			var newStamp = new Date();
-			tempArr.push({name: newName, tags: newTags, date: newDate, latestViewStamp: newStamp, notifications: 0});
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestViewStamp: newStamp, notifications: 0, latestNotifStamp: newStamp});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
@@ -320,7 +320,7 @@ angular.module('consumer', ['common'])
 					}
 					allStoriesService.setNotifications(story.name, newMsgCount);
 					if(angular.isDefined(data.messages[0])) {
-						allStoriesService.setLatestNotifStamp(story.name, (new Date(data.messages[0].timeStamp)).getTime());
+						allStoriesService.setLatestNotifStamp(story.name, (new Date(data.messages[0].timeStamp)));
 					}
 				}
 			})

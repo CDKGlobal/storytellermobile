@@ -25,7 +25,7 @@
         
         <div class="buttonBar">
             <super-navigate view-id="story-stream">
-                <button class="singleStory" ng-repeat="story in stories | orderBy:'latestNotifStamp'" ng-click="publishInfo(story.name)">
+                <button class="singleStory" ng-repeat="story in stories | orderBy:'-latestNotifStamp'" ng-click="publishInfo(story.name)">
                     <div class="badge badge-assertive notifButton" ng-bind="addPlus(story.notifications)"></div>
                     <div class="nameAndPreview">
                         <span class="storyName">{{story.name}}</span>
