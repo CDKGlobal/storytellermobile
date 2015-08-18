@@ -241,6 +241,12 @@
 }
 
 #storyInput {
+	border: 2px solid #81be41;
+	border-radius: 5px;
+	margin-left: 2px;
+	margin-right: 2px;
+	background-color: #e5f2d9;
+	opacity: 0.65;
 	display: block;
 }
 
