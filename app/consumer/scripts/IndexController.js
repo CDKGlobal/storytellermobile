@@ -27,7 +27,7 @@ angular.module('consumer', ['common'])
 				newTags = newTags.split(/[\s,]+/);
 			}
 			var newStamp = new Date();
-			tempArr.push({name: newName, tags: newTags, date: newDate, latestViewStamp: newStamp, notifications: 0, latestNotifStamp: newStamp});
+			tempArr.push({name: newName, tags: newTags, date: newDate, latestViewStamp: newStamp, notifications: 0});
 			localStorage.setItem('allStories', JSON.stringify(tempArr));
 		}
 	};
@@ -131,21 +131,6 @@ angular.module('consumer', ['common'])
 		return storiesCopy.notifications;
 	}
 
-	var getLatestNotifStamp = function(storyName) {
-		var storiesCopy = findStory(storyName);
-		return storiesCopy.latestNotifStamp;
-	}
-
-	var setLatestNotifStamp = function(storyName, newStamp) {
-		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
-		for(var i = 0; i < storiesCopy.length; i++) {
-			if(storiesCopy[i].name === storyName) {
-				storiesCopy[i].latestNotifStamp = newStamp;
-			}
-		}
-		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
-	}
-
 	return {
 		addStory: addStory,
 		getStories: getStories,
@@ -159,9 +144,7 @@ angular.module('consumer', ['common'])
 		getLatestViewStamp: getLatestViewStamp,
 		setLatestViewStamp: setLatestViewStamp,
 		getNotifications: getNotifications,
-		setNotifications: setNotifications,
-		getLatestNotifStamp: getLatestNotifStamp,
-		setLatestNotifStamp: setLatestNotifStamp
+		setNotifications: setNotifications
 	};
 })
 .service('validateService', function() {
@@ -196,7 +179,6 @@ angular.module('consumer', ['common'])
 				if(!validateService.checkValid(date) || date == 0) {
 					// date is also set
 					startQuery = dateService.subtractMonths(date);
-					console.log(startQuery);
 					if(startQuery == null) {
 						return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
 					} else {
@@ -208,7 +190,6 @@ angular.module('consumer', ['common'])
 			} else {
 				// only date is set
 				startQuery = dateService.subtractMonths(date);
-				console.log(startQuery);
 				if(startQuery == null) {
 					return tempURL + "records?count=" + increaseAmount + "&callback=JSON_CALLBACK";
 				} else {
@@ -299,7 +280,6 @@ angular.module('consumer', ['common'])
 		previewsList.length = 0;
 		angular.forEach(storiesCopy, function(story) {
 			var msgList = [];
-			console.log(story.name + " " + msgList);
 			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
@@ -308,32 +288,20 @@ angular.module('consumer', ['common'])
 					var newMsgCount = 0;
 					var msgIndex = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
-					if(allStoriesService.getLatestNotifStamp(story.name) === savedStamp) {
-						allStoriesService.setNotifications(story.name, 0);
-						console.log("same stamp success");
-					} else {
-						while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
-							var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
-							var savedTime = new Date(savedStamp).getTime();
-							console.log(story.name + " "  + msgTime + " " + savedTime);
-							if(msgTime > savedTime) {
-								newMsgCount++;
-							}
-							// console.log(story.name + ": " + msgList);
-							if(msgList.length < 3) {
-								// console.log("entered < 3");
-								var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
-								msgList.push(item);
-							}
-							msgIndex++;
+					
+					while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
+						var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
+						var savedTime = new Date(savedStamp).getTime();
+						if(msgTime > savedTime) {
+							newMsgCount++;
 						}
-						// fix off-by-one error
-						allStoriesService.setNotifications(story.name, newMsgCount);
+						if(msgList.length < 3) {
+							var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
+							msgList.push(item);
+						}
+						msgIndex++;
 					}
-					if(data.messages[0].length > 0) {
-						var newNotifStamp = new Date(data.messages[0].timeStamp);
-						allStoriesService.setLatestNotifStamp(story.name, newNotifStamp.getTime());
-					}
+					allStoriesService.setNotifications(story.name, newMsgCount);
 				}
 			})
 			.error(function(data, status, headers, config) {
@@ -347,7 +315,6 @@ angular.module('consumer', ['common'])
 			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
-		// console.log(previewsList);
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
 		});
@@ -425,7 +392,6 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
-		// console.log("match 0 previews: " + match[0].previews);
 		return match[0].previews;
 	}
 
