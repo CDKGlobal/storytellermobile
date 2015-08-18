@@ -16,9 +16,12 @@ angular.module('consumer')
 		$scope.hideMoreButton = true;
 		$scope.noMore = true;
 		$scope.allResults = null;
-		$scope.search.keywords = "";
-		$scope.search.startdate = "";
-		$scope.search.enddate = "";
+
+		$scope.search = {
+			keywords: "",
+			startdate: "",
+			enddate: ""
+		};
 	});
 
 	// puts array items into x,y,z format for url
@@ -65,6 +68,7 @@ angular.module('consumer')
 
 		if(validateService.checkValid($scope.search)) {
 			var keywords = $scope.search.keywords;
+
 			var start = $scope.search.startdate;
 			var end = $scope.search.enddate;
 
@@ -119,7 +123,7 @@ angular.module('consumer')
 		}
 
 		console.log(baseUrl);
-		supersonic.logger.log(baseUrl);
+		supersonic.logger.log("This is the baseUrl: " + baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {

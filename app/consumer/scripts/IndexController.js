@@ -496,9 +496,9 @@ angular.module('consumer', ['common'])
 	}
 })
 .controller('AutocompleteController', function ($scope, $http, supersonic, urlPrefix) {
-	$scope.dealerNameSearchTerm = [];
+	$scope.hashtagSuggestions = [];
 
-	var hold = " ";
+	var hold = "";
 
     $scope.filterTagsBySearchTerm = function () {
     	supersonic.logger.log("Info enter..");
@@ -508,7 +508,12 @@ angular.module('consumer', ['common'])
     	if (hold !== newest) {
 			$http.jsonp(request)
 				.success(function(data, status, headers, config, scope) {
-					$scope.dealerNameSearchTerm = data.messages;
+					var result = [];
+					var runner = data.messages;
+					for (var i = 0; i < runner.length; i++) {
+						result.push(runner[i].hashTag);
+					}
+					$scope.hashtagSuggestions = result;
 					supersonic.logger.log("Autocomplete http Success! " + status);
 				})
 				.error(function(data, status, headers, config) {
@@ -517,4 +522,9 @@ angular.module('consumer', ['common'])
 			hold = newest;
     	}
     };
+
+    $scope.changeSearchWord = function(searchkeywords) {
+    	$scope.search.keywords = searchkeywords.substring(1,searchkeywords.length);
+    	$scope.searchAll(15);
+    }
 });
