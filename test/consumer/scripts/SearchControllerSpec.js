@@ -1,12 +1,11 @@
 describe("SearchController", function() {
-	var scope, createController, controller, filterService, validateService;
+	var scope, createController, controller, validateService;
 
 	beforeEach(angular.mock.module("consumer", "supersonic"));
 
 	beforeEach(angular.mock.inject (function ($rootScope, _supersonic_, $controller, $injector) {
 		scope = $rootScope;
 		$httpBackend = $injector.get('$httpBackend');
-		filterService = $injector.get('filterService');
 		validateService = $injector.get('validateService');
 		createController = function() {
 			return $controller('SearchController', {
@@ -15,6 +14,9 @@ describe("SearchController", function() {
 			});
 		};
 		controller = createController();
+		$injector.get('allStoriesService').deleteAll();
+		supersonic.data.channel('story-name').publish("testSC");
+		$injector.get('allStoriesService').addStory("testSC");
 	}));
 
 	it("should initially hide 3 elements", function() {
@@ -103,14 +105,15 @@ describe("SearchController", function() {
 		$httpBackend.flush();
 	});
 
-	it("should use the search? URL if keywords are given", function() {
+	it("should use the search? URL if keywords are given", function(done) {
 		scope.search = {keywords: "hello"};
 		expect(validateService.checkValid(scope.search)).toBe(true);
 		$httpBackend.expectJSONP('http://fleet.ord.cdk.com/storytellerconsumer/search?query=hello&count=15&callback=JSON_CALLBACK')
 			.respond({
 				"messages": []
 		});
-		scope.searchAll(15);
+		scope.searchAll(15)
+			.finally(done);
 		$httpBackend.flush();
 
 		scope.search.startdate = "2015-08-01";
