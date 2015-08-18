@@ -284,7 +284,7 @@ angular.module('consumer', ['common'])
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Success! " + status);
-				if(validateService.checkValid(data.messages)) {
+				if(validateService.checkValid(data.messages) && data.messages.length > 0) {
 					var newMsgCount = 0;
 					var msgIndex = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
@@ -308,10 +308,14 @@ angular.module('consumer', ['common'])
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
 			// ensures previews is of length 3 (preserved spacing)
-			while(msgList.length < 3) {
-				// non-breaking space
-				msgList.push({content: "\u00A0\u00A0", stamp: ""});
-			}
+			// console.log(msgList.length);
+			// while(msgList.length < 3) {
+			// 	// non-breaking space
+			// 	console.log("ooom");
+			// 	var item = {content: "WUP", stamp: "0"}
+			// 	msgList.push(item);
+			// 	console.log(msgList);
+			// }
 			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
@@ -392,6 +396,7 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
+		console.log("match: " + match[0].previews);
 		return match[0].previews;
 	}
 
