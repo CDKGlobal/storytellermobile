@@ -307,15 +307,6 @@ angular.module('consumer', ['common'])
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
-			// ensures previews is of length 3 (preserved spacing)
-			// console.log(msgList.length);
-			// while(msgList.length < 3) {
-			// 	// non-breaking space
-			// 	console.log("ooom");
-			// 	var item = {content: "WUP", stamp: "0"}
-			// 	msgList.push(item);
-			// 	console.log(msgList);
-			// }
 			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
