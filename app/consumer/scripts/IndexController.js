@@ -308,24 +308,31 @@ angular.module('consumer', ['common'])
 					var newMsgCount = 0;
 					var msgIndex = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
-					while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
-						var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
-						var savedTime = new Date(savedStamp).getTime();
-						if(msgTime > savedTime) {
-							newMsgCount++;
+					if(allStoriesService.getLatestNotifStamp(story.name) === savedStamp) {
+						allStoriesService.setNotifications(story.name, 0);
+						console.log("same stamp success");
+					} else {
+						while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
+							var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
+							var savedTime = new Date(savedStamp).getTime();
+							console.log(story.name + " "  + msgTime + " " + savedTime);
+							if(msgTime > savedTime) {
+								newMsgCount++;
+							}
+							// console.log(story.name + ": " + msgList);
+							if(msgList.length < 3) {
+								// console.log("entered < 3");
+								var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
+								msgList.push(item);
+							}
+							msgIndex++;
 						}
-						console.log(story.name + ": " + msgList);
-						if(msgList.length < 3) {
-							console.log("entered < 3");
-							var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
-							msgList.push(item);
-						}
-						msgIndex++;
+						// fix off-by-one error
+						allStoriesService.setNotifications(story.name, newMsgCount);
 					}
-					// fix off-by-one error
-					allStoriesService.setNotifications(story.name, newMsgCount - 1);
 					if(data.messages[0].length > 0) {
-						allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
+						var newNotifStamp = new Date(data.messages[0].timeStamp);
+						allStoriesService.setLatestNotifStamp(story.name, newNotifStamp.getTime());
 					}
 				}
 			})
@@ -335,12 +342,12 @@ angular.module('consumer', ['common'])
 			// ensures previews is of length 3 (preserved spacing)
 			while(msgList.length < 3) {
 				// non-breaking space
-				msgList.push("\u00A0\u00A0");
+				msgList.push({content: "\u00A0\u00A0", stamp: ""});
 			}
 			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
-		console.log(previewsList);
+		// console.log(previewsList);
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
 		});
@@ -418,7 +425,7 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
-		console.log("match 0 previews: " + match[0].previews);
+		// console.log("match 0 previews: " + match[0].previews);
 		return match[0].previews;
 	}
 
