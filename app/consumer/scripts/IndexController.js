@@ -196,7 +196,6 @@ angular.module('consumer', ['common'])
 				if(!validateService.checkValid(date) || date == 0) {
 					// date is also set
 					startQuery = dateService.subtractMonths(date);
-					console.log(startQuery);
 					if(startQuery == null) {
 						return tempURL + "search?query=" + tagQuery + "&callback=JSON_CALLBACK";
 					} else {
@@ -208,7 +207,6 @@ angular.module('consumer', ['common'])
 			} else {
 				// only date is set
 				startQuery = dateService.subtractMonths(date);
-				console.log(startQuery);
 				if(startQuery == null) {
 					return tempURL + "records?count=" + increaseAmount + "&callback=JSON_CALLBACK";
 				} else {
@@ -299,48 +297,39 @@ angular.module('consumer', ['common'])
 		previewsList.length = 0;
 		angular.forEach(storiesCopy, function(story) {
 			var msgList = [];
-			console.log(story.name + " " + msgList);
 			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Success! " + status);
-				if(validateService.checkValid(data.messages)) {
+				if(validateService.checkValid(data.messages) && data.messages.length > 0) {
 					var newMsgCount = 0;
 					var msgIndex = 0;
 					var savedStamp = allStoriesService.getLatestViewStamp(story.name);
+					
 					while(msgIndex < data.messages.length && (msgList.length < 3 || new Date(data.messages[msgIndex].timeStamp).getTime() > new Date(savedStamp).getTime())) {
 						var msgTime = new Date(data.messages[msgIndex].timeStamp).getTime();
 						var savedTime = new Date(savedStamp).getTime();
 						if(msgTime > savedTime) {
 							newMsgCount++;
 						}
-						console.log(story.name + ": " + msgList);
 						if(msgList.length < 3) {
-							console.log("entered < 3");
 							var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
 							msgList.push(item);
 						}
 						msgIndex++;
 					}
-					// fix off-by-one error
-					allStoriesService.setNotifications(story.name, newMsgCount - 1);
-					if(data.messages[0].length > 0) {
-						allStoriesService.setLatestNotifStamp(story.name, data.messages[0].timeStamp);
+					allStoriesService.setNotifications(story.name, newMsgCount);
+					if(angular.isDefined(data.messages[0])) {
+						allStoriesService.setLatestNotifStamp(story.name, (new Date(data.messages[0].timeStamp)));
 					}
 				}
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
-			// ensures previews is of length 3 (preserved spacing)
-			while(msgList.length < 3) {
-				// non-breaking space
-				msgList.push("\u00A0\u00A0");
-			}
 			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
-		console.log(previewsList);
 		$timeout(function() {
 			$scope.stories = allStoriesService.getStories();
 		});
@@ -418,7 +407,6 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
-		console.log("match 0 previews: " + match[0].previews);
 		return match[0].previews;
 	}
 
