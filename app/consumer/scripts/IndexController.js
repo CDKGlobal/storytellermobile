@@ -131,6 +131,21 @@ angular.module('consumer', ['common'])
 		return storiesCopy.notifications;
 	}
 
+	var getLatestNotifStamp = function(storyName) {
+		var storiesCopy = findStory(storyName);
+		return storiesCopy.latestNotifStamp;
+	}
+
+	var setLatestNotifStamp = function(storyName, newStamp) {
+		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
+		for(var i = 0; i < storiesCopy.length; i++) {
+			if(storiesCopy[i].name === storyName) {
+				storiesCopy[i].latestNotifStamp = newStamp;
+			}
+		}
+		localStorage.setItem('allStories', JSON.stringify(storiesCopy));
+	}
+
 	return {
 		addStory: addStory,
 		getStories: getStories,
@@ -144,7 +159,9 @@ angular.module('consumer', ['common'])
 		getLatestViewStamp: getLatestViewStamp,
 		setLatestViewStamp: setLatestViewStamp,
 		getNotifications: getNotifications,
-		setNotifications: setNotifications
+		setNotifications: setNotifications,
+		getLatestNotifStamp: getLatestNotifStamp,
+		setLatestNotifStamp: setLatestNotifStamp
 	};
 })
 .service('validateService', function() {
@@ -302,6 +319,9 @@ angular.module('consumer', ['common'])
 						msgIndex++;
 					}
 					allStoriesService.setNotifications(story.name, newMsgCount);
+					if(angular.isDefined(data.messages[0])) {
+						allStoriesService.setLatestNotifStamp(story.name, (new Date(data.messages[0].timeStamp)).getTime());
+					}
 				}
 			})
 			.error(function(data, status, headers, config) {
@@ -387,7 +407,6 @@ angular.module('consumer', ['common'])
 
 	$scope.previews = function(storyName) {
 		var match = $filter('filter')(previewsList, { name: storyName});
-		console.log("match: " + match[0].previews);
 		return match[0].previews;
 	}
 
