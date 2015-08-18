@@ -328,7 +328,6 @@ angular.module('consumer', ['common'])
 
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
-		// previewsList.length = 0;
 		angular.forEach(storiesCopy, function(story) {
 			// temp storage
 			var msgList = [];
@@ -368,7 +367,6 @@ angular.module('consumer', ['common'])
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
-			// reset
 			msgList.length = 0;
 		})
 		$timeout(function() {
