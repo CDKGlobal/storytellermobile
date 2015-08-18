@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SearchController', function($scope, supersonic, $http, urlPrefix, validateService, modTimestamp, allStoriesService) {
+.controller('SearchController', function($scope, supersonic, $http, urlPrefix, validateService, modTimestamp, allStoriesService, sharedSearchKeywords) {
 	var count;
 	var storyName = "";
 
@@ -16,9 +16,12 @@ angular.module('consumer')
 		$scope.hideMoreButton = true;
 		$scope.noMore = true;
 		$scope.allResults = null;
-		$scope.search.keywords = "";
-		$scope.search.startdate = "";
-		$scope.search.enddate = "";
+
+		$scope.search = {
+			keywords: "",
+			startdate: "",
+			enddate: ""
+		};
 	});
 
 	// puts array items into x,y,z format for url
@@ -39,6 +42,8 @@ angular.module('consumer')
 		} else {
 			count += 15;
 		}
+
+		supersonic.logger.log("You entered the search query");
 
 		document.activeElement.blur();
 
@@ -65,6 +70,9 @@ angular.module('consumer')
 
 		if(validateService.checkValid($scope.search)) {
 			var keywords = $scope.search.keywords;
+			supersonic.logger.log("Get into the query");
+			supersonic.logger.log("This is the keywords : " + keywords);
+
 			var start = $scope.search.startdate;
 			var end = $scope.search.enddate;
 
@@ -119,7 +127,7 @@ angular.module('consumer')
 		}
 
 		console.log(baseUrl);
-		supersonic.logger.log(baseUrl);
+		supersonic.logger.log("This is the baseUrl: " + baseUrl);
 
 		var promise = $http.jsonp(baseUrl)
 			.success(function(data, status, headers, config, scope) {

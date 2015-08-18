@@ -180,6 +180,18 @@ angular.module('consumer', ['common'])
 		}
 	}
 })
+.service('sharedSearchKeywords', function() {
+	var keywords = '';
+
+	return {
+		getKeywords: function() {
+			return keywords;
+		},
+		setKeywords: function(value) {
+			keywords = value;
+		}
+	}
+})
 .service('basicStoryURL', function(urlPrefix, validateService, dateService, increaseAmount) {
 	return {
 		getURL: function(hashtags, date) {
@@ -496,7 +508,7 @@ angular.module('consumer', ['common'])
     };
 
     $scope.changeSearchWord = function(searchkeywords) {
-    	$scope.search.keywords = searchkeywords;
+    	$scope.search.keywords = searchkeywords.substring(1,searchkeywords.length);
     	$scope.searchAll(15);
     }
 });
