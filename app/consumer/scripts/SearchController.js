@@ -1,5 +1,5 @@
 angular.module('consumer')
-.controller('SearchController', function($scope, supersonic, $http, urlPrefix, validateService, modTimestamp, allStoriesService, sharedSearchKeywords) {
+.controller('SearchController', function($scope, supersonic, $http, urlPrefix, validateService, modTimestamp, allStoriesService) {
 	var count;
 	var storyName = "";
 
@@ -43,8 +43,6 @@ angular.module('consumer')
 			count += 15;
 		}
 
-		supersonic.logger.log("You entered the search query");
-
 		document.activeElement.blur();
 
 		var baseUrl = urlPrefix;
@@ -70,8 +68,6 @@ angular.module('consumer')
 
 		if(validateService.checkValid($scope.search)) {
 			var keywords = $scope.search.keywords;
-			supersonic.logger.log("Get into the query");
-			supersonic.logger.log("This is the keywords : " + keywords);
 
 			var start = $scope.search.startdate;
 			var end = $scope.search.enddate;
