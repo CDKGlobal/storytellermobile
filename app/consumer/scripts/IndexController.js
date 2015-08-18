@@ -282,7 +282,7 @@ angular.module('consumer', ['common'])
 	var getPreview = function(storyName) {
 		var tempArr = JSON.parse(localStorage.getItem('allPreviews'));
 		var matches = $filter('filter')(tempArr, { name: storyName});
-		if(validateService.checkValid(matches[0]) && validateService.checkValid(matches[0].threePreviews)) {
+		if(validateService.checkValid(matches) && validateService.checkValid(matches[0]) && validateService.checkValid(matches[0].threePreviews)) {
 			return matches[0].threePreviews;
 		}
 		return [];
