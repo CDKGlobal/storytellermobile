@@ -74,15 +74,15 @@ angular.module('consumer')
 			supersonic.logger.log("Success! updating " + status);
 			$scope.allMsg = data;
 			if(data == null || data.messages.length === 0) {
-					$scope.hideMoreButton = true;
-					$scope.noMore = true;
-				} else if (data.messages.length === count) {
-					$scope.hideMoreButton = false;
-					$scope.noMore = true;
-				} else {
-					$scope.hideMoreButton = true;
-					$scope.noMore = false;
-				}
+				$scope.hideMoreButton = true;
+				$scope.noMore = true;
+			} else if (data.messages.length === count) {
+				$scope.hideMoreButton = false;
+				$scope.noMore = true;
+			} else {
+				$scope.hideMoreButton = true;
+				$scope.noMore = false;
+			}
 			$scope.index.spinner = true;
 			$scope.stories.hide = false;
 			if(validateService.checkValid(data)) {

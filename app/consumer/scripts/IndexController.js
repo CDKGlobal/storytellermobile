@@ -486,6 +486,7 @@ angular.module('consumer', ['common'])
 	var anchorExp = new RegExp(anchorRegex);
 	var txtRegex = />.*</;
 	var onclickRegex = /<a onclick=/;
+	// makes links marked with anchor tags clickable (add supersonic property)
 	$scope.modLink = function(message) {
 		var result;
 		if(anchorExp.test(message)) {
