@@ -1,5 +1,5 @@
 angular.module('consumer', ['common'])
-.service('allStoriesService', function($filter) {
+.service('allStoriesService', function($filter, validateService) {
 	var findStory = function(storyName) {
 		var storiesCopy = JSON.parse(localStorage.getItem('allStories'));
 		var matches = $filter('filter')(storiesCopy, { name: storyName});
@@ -21,7 +21,7 @@ angular.module('consumer', ['common'])
 		}
 		// if newName is valid and not already taken
 		if(newName != null && angular.isDefined(newName) && findStory(newName) == null) {
-			if(newTags == null || angular.isUndefined(newTags)) {
+			if(!validateService.checkValid(newTags)) {
 				newTags = null;
 			} else {
 				newTags = newTags.split(/[\s,]+/);
@@ -467,6 +467,7 @@ angular.module('consumer', ['common'])
 
 	$scope.deleteAll = function() {
 		allStoriesService.deleteAll();
+		supersonic.ui.layers.popAll();
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
