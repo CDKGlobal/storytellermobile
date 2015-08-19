@@ -259,6 +259,40 @@ angular.module('consumer', ['common'])
 		getTimeout: getTimeout
 	}
 })
+.service('cachePreviews', function(validateService, $filter) {
+	// map names, 3 story previews in localStorage
+
+	var setPreview = function(storyName, previewArr) {
+		// previewArr should be an array of objects
+		var tempArr = JSON.parse(localStorage.getItem('allPreviews'));
+		if(!validateService.checkValid(tempArr)) {
+			tempArr = [];
+		}
+		// delete old one
+		for(var i = 0; i < tempArr.length; i++) {
+			if(tempArr[i].name === storyName) {
+				tempArr.splice(i, 1);
+			}
+		}
+		var newItem = {name: storyName, threePreviews: previewArr};
+		tempArr.push(newItem);
+		localStorage.setItem('allPreviews', JSON.stringify(tempArr));
+	}
+
+	var getPreview = function(storyName) {
+		var tempArr = JSON.parse(localStorage.getItem('allPreviews'));
+		var matches = $filter('filter')(tempArr, { name: storyName});
+		if(validateService.checkValid(matches) && validateService.checkValid(matches[0]) && validateService.checkValid(matches[0].threePreviews)) {
+			return matches[0].threePreviews;
+		}
+		return [];
+	}
+
+	return {
+		setPreview: setPreview,
+		getPreview: getPreview
+	}
+})
 .constant('urlPrefix', 'http://fleet.ord.cdk.com/storytellerconsumer/')
 .constant('presetTimes', [
 	{name: "All time", id: "0"},
@@ -276,7 +310,7 @@ angular.module('consumer', ['common'])
 ])
 .constant('increaseAmount', 15)
 .controller('FrontController', function($scope, supersonic, allStoriesService, $timeout, $interval, 
-	$http, basicStoryURL, validateService, increaseAmount, $filter, presetDelays, notifDelayService) {
+	$http, basicStoryURL, validateService, increaseAmount, $filter, presetDelays, notifDelayService, cachePreviews) {
 
 	$scope.stories = allStoriesService.getStories();
 	var previewsList = [];
@@ -294,13 +328,14 @@ angular.module('consumer', ['common'])
 
 	$scope.updateNotifications = function() {
 		var storiesCopy = allStoriesService.getStories();
-		previewsList.length = 0;
 		angular.forEach(storiesCopy, function(story) {
+			// temp storage
 			var msgList = [];
 			var storyURL = basicStoryURL.getURL(allStoriesService.getHashes(story.name), allStoriesService.getDate(story.name));
 			$http.jsonp(storyURL)
 			.success(function(data, status, headers, config, scope) {
 				supersonic.logger.log("Success! " + status);
+
 				if(validateService.checkValid(data.messages) && data.messages.length > 0) {
 					var newMsgCount = 0;
 					var msgIndex = 0;
@@ -315,19 +350,23 @@ angular.module('consumer', ['common'])
 						if(msgList.length < 3) {
 							var item = {content: data.messages[msgIndex].message, stamp: data.messages[msgIndex].timeStamp}
 							msgList.push(item);
-						}
+						} 
 						msgIndex++;
 					}
 					allStoriesService.setNotifications(story.name, newMsgCount);
 					if(angular.isDefined(data.messages[0])) {
 						allStoriesService.setLatestNotifStamp(story.name, (new Date(data.messages[0].timeStamp)));
 					}
+					// only update if there is a change
+					var thisPreviews = cachePreviews.getPreview(story.name);
+					if(!validateService.checkValid(thisPreviews) || msgList[0].stamp != thisPreviews[0].stamp) {
+						cachePreviews.setPreview(story.name, msgList);
+					}
 				}
 			})
 			.error(function(data, status, headers, config) {
 				supersonic.logger.log("Error: " + status + " " + storyURL);
 			});
-			previewsList.push({name: story.name, previews: msgList});
 			msgList.length = 0;
 		})
 		$timeout(function() {
@@ -405,9 +444,8 @@ angular.module('consumer', ['common'])
 		$scope.newStoryTags = "";
 	}
 
-	$scope.previews = function(storyName) {
-		var match = $filter('filter')(previewsList, { name: storyName});
-		return match[0].previews;
+	$scope.getPreviews = function(storyName) {
+		return cachePreviews.getPreview(storyName);
 	}
 
 })
