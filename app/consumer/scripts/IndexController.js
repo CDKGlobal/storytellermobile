@@ -53,6 +53,8 @@ angular.module('consumer', ['common'])
 		var storiesCopy = findStory(storyName);
 		if (storiesCopy != null) {
 			return storiesCopy.tags;
+		} else {
+			return null;
 		}
 	};
 
@@ -60,6 +62,8 @@ angular.module('consumer', ['common'])
 		var storiesCopy = findStory(storyName);
 		if (storiesCopy != null) {
 			return storiesCopy.date;
+		} else {
+			return null;
 		}
 	};
 
