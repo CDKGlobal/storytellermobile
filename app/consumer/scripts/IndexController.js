@@ -51,12 +51,16 @@ angular.module('consumer', ['common'])
 	// finds filters based on input name
 	var getHashes = function(storyName) {
 		var storiesCopy = findStory(storyName);
-		return storiesCopy.tags;
+		if (storiesCopy != null) {
+			return storiesCopy.tags;
+		}
 	};
 
 	var getDate = function(storyName) {
 		var storiesCopy = findStory(storyName);
-		return storiesCopy.date;
+		if (storiesCopy != null) {
+			return storiesCopy.date;
+		}
 	};
 
 	var addHash = function(storyName, newFilter) {
