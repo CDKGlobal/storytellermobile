@@ -16,22 +16,23 @@
     <form>
         <p class="comment">Searches message content and hashtags</p>
         <p class="comment">We can give you related hashtags</p>
-        <div class="searchItem" ng-controller="AutocompleteController">  
+        <div class="searchItem" ng-controller="AutocompleteController" >  
             <label>Keywords:</label>
             
             <span><input type="text" ng-keyup="filterTagsBySearchTerm()" autocorrect="off" autocapitalize="off" placeholder="type anything to search" ng-model="search.keywords"></span>
 
-            <div class="sidebyside">
-                <h6>Recommend <br/>hashtags: <h6>
-            </div>
-            <div class="autocompleteResult sidebyside list list-inset">
-                <div ng-repeat="hashtag in hashtagSuggestions" ng-click="changeSearchWord(hashtag)">
-                    <div class="singleResult item" ng-class-odd="'odd'" ng-class-even="'even'">
-                        <h4 style="color:blue;text-align: center;">{{hashtag}}</h4>
+            <div ng-hide="!search.keywords">
+                <div class="sidebyside">
+                    <h6>Recommend <br/>hashtags: <h6>
+                </div>
+                <div class="autocompleteResult sidebyside list list-inset">
+                    <div ng-repeat="hashtag in hashtagSuggestions" ng-click="changeSearchWord(hashtag)">
+                        <div class="singleResult item" ng-class-odd="'odd'" ng-class-even="'even'">
+                            <h4 style="color:blue;text-align: center;">{{hashtag}}</h4>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <h4>Date Range</h4>
