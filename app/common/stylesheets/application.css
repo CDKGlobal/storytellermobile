@@ -37,13 +37,22 @@
 
 .dateInput select {
 	width: 100%;
+}
+
+.dateInput select, #setDelay select {
 	font-size: 12pt;
+	background-color: lightgray;
+	padding: 2px;
 }
 
 .dateInput span {
 	display: block;
 	overflow: hidden;
 	margin: 5px;
+}
+
+#deleteAll {
+	margin-top: 50px;
 }
 
 .drawerButton {
@@ -227,6 +236,10 @@
 	border-color: lightgray;
 	border-radius: 0;
 	padding-left: 5px;
+}
+
+#setDelay {
+	padding-left: 20px;
 }
 
 .singleStory {
