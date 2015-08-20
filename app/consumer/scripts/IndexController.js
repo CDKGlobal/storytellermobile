@@ -479,27 +479,7 @@ angular.module('consumer', ['common'])
 	}
 })
 .controller('LinkController', function($scope, supersonic, $sce) {
-	// John Gruber's regex, modified for JS
-	var linkRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
-	var linkExp = new RegExp(linkRegex);
-	var anchorRegex = /<a[^>]*>([^<]+)<\/a>/;
-	var anchorExp = new RegExp(anchorRegex);
-	var txtRegex = />.*</;
-	var onclickRegex = /<a onclick=/;
-	// makes links marked with anchor tags clickable (add supersonic property)
 	$scope.modLink = function(message) {
-		var result;
-		if(anchorExp.test(message)) {
-			supersonic.logger.log("before while");
-			while((result = anchorExp.exec(message)) !== null && result[0].indexOf("<a onclick") < 0) {
-				supersonic.logger.log("result[0]: " + result[0]);
-				var text = result[0].match(txtRegex);
-				var modLink = "<a onclick=\"supersonic.app.openURL(\'" + linkExp.exec(result[0])[0] +"\')\" href=\"\"" + text + "/a>";
-				supersonic.logger.log("message.indexOf(result[0]): " + message.indexOf(result[0]))
-				message = message.replace(result[0], modLink);
-				supersonic.logger.log(message);
-			}
-		}
 		return $sce.trustAsHtml(message);
 	}
 })
